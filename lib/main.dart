@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kar_ride/screens/home.dart';
 import 'package:kar_ride/screens/register.dart';
 import 'package:kar_ride/screens/login.dart';
+import 'package:kar_ride/screens/routes.dart';
 import 'package:kar_ride/themes/themes.dart';
 import 'package:kar_ride/splash_screen/splash_screen.dart';
 
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
       home: HomeScreen(),
       routes:{
         "/Home":(context)=>HomeScreen(),
+        "/Routes":(context)=>RoutesScreen(),
         "/Register":(context)=>RegisterScreen(),
         "/Login":(context)=>LoginScreen(),
       },

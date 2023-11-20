@@ -361,7 +361,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     fontSize: 15,
                                   ),
                                 ),
-                                
+                                ////HAVE AN ACCOUNT////
                                 SizedBox(width: 5,),
                                 GestureDetector(
                                   onTap: (){
@@ -375,6 +375,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     ),
                                   ),
                                 ),
+                                ////CLICK TO LOGIN////
                               ],
                             ),
                           ],

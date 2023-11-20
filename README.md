@@ -1,16 +1,26 @@
-# flutter_application_2
+# Kar Ride
 
-A new Flutter project.
+A new carpooling app in Flutter.
 
-## Getting Started
+## User APP
 
-This project is a starting point for a Flutter application.
+- screens/
 
-A few resources to get you started if this is your first Flutter project:
+    -- home.dart : includes the map and the navigation lines of the routes
+    
+    -- login.dart: includes the user login page
+    
+    -- register.dart:includes the user registeration page
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+    -- routes.dart: includes all the available routes and their approximate range of prices
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- splash_screen/
+
+    -- splash_screen.dart: loading page with the app logo
+
+- themes/
+
+    --themes.dart: light and dark themes
+
+- main.dart: the navigation and the interaction between the pages 
+
