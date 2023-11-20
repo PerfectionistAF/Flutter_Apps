@@ -4,6 +4,8 @@ A new carpooling app in Flutter.
 
 ## User APP
 
+### lib/
+
 - screens/
 
     -- home.dart : includes the map and the navigation lines of the routes
