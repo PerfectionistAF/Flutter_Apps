@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:kar_ride/themes/themes.dart';
-import 'package:kar_ride/main.dart';
+//import 'package:kar_ride/themes/themes.dart';
+//import 'package:kar_ride/main.dart';
 //TO DO:
 /*
 Validate inputs
@@ -9,6 +9,8 @@ Initialise country code
 Save inputs to firebase---_submit function
 
 FIX DARK THEME
+HANDLE BUTTONS
+CHECK TEXT IS HANDLED WELL
 */
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -314,8 +316,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ///////CONFIRM PASSWORD//////
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary:darkTheme? Colors.deepPurple.shade300 : Colors.amber.shade900,
-                                onPrimary: darkTheme? Colors.black : Colors.white,
+                                //primary
+                                backgroundColor:darkTheme? Colors.deepPurple.shade300 : Colors.amber.shade900,
+                                //onPrimary
+                                foregroundColor: darkTheme? Colors.black : Colors.white,
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(32),
@@ -361,7 +365,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 SizedBox(width: 5,),
                                 GestureDetector(
                                   onTap: (){
-                                  
+                                    Navigator.pushReplacementNamed(context, "/Login");
                                   },
                                   child:Text(
                                     'Log In',

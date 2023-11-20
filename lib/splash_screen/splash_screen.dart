@@ -7,12 +7,21 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+/*TO DO
+FIX FIREBASE ASSISTANCE 
+FIX TIMER
+*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Text(
-          'User App - Kar Ride'
+          'KarRide',
+          style:TextStyle(
+            fontFamily: 'Cairo',
+            fontSize: 40,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kar_ride/screens/home.dart';
 import 'package:kar_ride/screens/register.dart';
+import 'package:kar_ride/screens/login.dart';
 import 'package:kar_ride/themes/themes.dart';
+import 'package:kar_ride/splash_screen/splash_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,7 +20,12 @@ class MyApp extends StatelessWidget {
       theme:Themes.lightTheme,
       darkTheme: Themes.darkTheme,
       debugShowCheckedModeBanner: false,
-      home: RegisterScreen(),
+      home: HomeScreen(),
+      routes:{
+        "/Home":(context)=>HomeScreen(),
+        "/Register":(context)=>RegisterScreen(),
+        "/Login":(context)=>LoginScreen(),
+      },
     );
   }
 }
