@@ -26,3 +26,4 @@ A new carpooling app in Flutter.
 
 - main.dart: the navigation and the interaction between the pages 
 
+![Alt text](image.png)
