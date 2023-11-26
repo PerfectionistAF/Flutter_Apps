@@ -1,11 +1,393 @@
-//***APPLICATION MAIN EIGHT: LAB6:DBS..............................................................***/
-/*import 'package:flutter/material.dart';
-import 'db_lab6.dart';
+//***APPLICATION ASSESSMENT 3_____________________________________________________________________________*/
+/*import 'package:flutter_application_2/edit_ass3.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_application_2/add_ass3.dart';
+import 'package:flutter_application_2/database_ass3.dart';
+
+  List names = [
+  'Ahmed'
+  ];
+  List company = [
+  'Schneider'
+  ];
+  List emails = [
+  'ahmed@hotmail.com'
+  ];
 
 void main() {
   runApp(MaterialApp(
-    home: MyApp(),
-    routes: {'/home': (context) => MyApp()},
+      title: 'Business Cards',
+      home: MyBusinessCards(),
+      debugShowCheckedModeBanner: false,
+      routes: {
+        '/home': (context) => MyBusinessCards(), 
+        '/Add': (context) => Add()
+        }));
+}
+
+class MyBusinessCards extends StatefulWidget {
+  const MyBusinessCards({super.key});
+
+  @override
+  State<MyBusinessCards> createState() => _MyBusinessCardsState();
+}
+
+class _MyBusinessCardsState extends State<MyBusinessCards> {
+  mydatabaseclass mydb = mydatabaseclass();
+  
+  List list_names = [];
+  List list_company = [];
+  List list_emails = [];
+
+  Future Reading_Database() async {
+    List<Map> response = await mydb.reading('''SELECT * FROM 'TABLE1' ''');
+    list_names = [];
+    list_company = [];
+    list_emails = [];
+    list_names.addAll(response);
+    list_company.addAll(response);
+    list_emails.addAll(response);
+    setState(() {});//set state with all the added lists
+  }
+
+  @override
+  void initState() {
+    Reading_Database();
+    super.initState();
+    mydb.checking();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.deepPurpleAccent.shade100,
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          /*onPressed: () async {
+          await mydb.writing('''INSERT INTO 'TABLE1' 
+          ('NAME', 'COMPANY', 'EMAIL') VALUES ("Alia","ASU","alia@email.com") ''');
+          Reading_Database();
+          setState(() {});
+        },*/
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/Add');
+          }),
+      appBar: AppBar(
+        title: Text("Business Cards", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+        centerTitle: true,
+        backgroundColor: Colors.deepPurple.shade500,
+      ),
+      body: ListView.builder(
+          itemCount: names.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.all(10),
+              child: Card(
+                child: ListTile(
+                  onTap: () {
+                    print('you pressed on ${names[index]}');
+                  },
+                  leading: IconButton(
+                    /*onPressed: () {
+                    mydb.deleting(
+                        '''DELETE FROM TABLE1 WHERE ID = ${mylist[index]['ID']}''');
+                    mylist.removeWhere(
+                        (element) => element['ID'] == mylist[index]['ID']);
+                    setState(() {});
+                  },*/
+                      onPressed: () {
+                        setState(() {
+                          names.removeAt(index);
+                        });
+                      },
+                      icon: Icon(Icons.delete)),
+                  trailing: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) {
+                          return Edit(edit_name: names[index], edit_company: company[index], edit_email: emails[index], index: index);
+                        }));
+                      },
+                      /*onPressed: () async {
+                    await mydb.updating('''UPDATE 'TABLE1' SET 
+                    'FIRST NAME' = 'Ain Shams University',
+                    'SECOND NAME' = 'Faculty of Engineering' WHERE ID = ${mylist[index]['ID']}
+                    ''');
+                    Reading_Database();
+                    setState(() {});
+                  },*/
+                      icon: Icon(Icons.edit)),
+                      
+                  title: Text(names[index]),
+                  subtitle: Text(company[index]),
+                ),
+              ),
+            );
+          }),
+    );
+  }
+}*/
+//***APPLICATION MAIN NINE: LAB6:DBS_EXAMPLE 2..............................................................***/
+/*import 'package:flutter/material.dart';
+import 'package:flutter_application_2/screens/notes_screen.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Local Database demo app',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const NotesScreen(),
+    );
+  }
+}*/
+//***APPLICATION MAIN EIGHT: LAB6:DBS..............................................................***/
+// main.dart
+import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Hive.initFlutter();
+  // await Hive.deleteBoxFromDisk('shopping_box');
+  await Hive.openBox('shopping_box');
+
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'KindaCode.com',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+      ),
+      home: const HomePage(),
+    );
+  }
+}
+
+// Home Page
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List<Map<String, dynamic>> _items = [];
+
+  final _shoppingBox = Hive.box('shopping_box');
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshItems(); // Load data when app starts
+  }
+
+  // Get all items from the database
+  void _refreshItems() {
+    final data = _shoppingBox.keys.map((key) {
+      final value = _shoppingBox.get(key);
+      return {"key": key, "name": value["name"], "quantity": value['quantity']};
+    }).toList();
+
+    setState(() {
+      _items = data.reversed.toList();
+      // we use "reversed" to sort items in order from the latest to the oldest
+    });
+  }
+
+  // Create new item
+  Future<void> _createItem(Map<String, dynamic> newItem) async {
+    await _shoppingBox.add(newItem);
+    _refreshItems(); // update the UI
+  }
+
+  // Retrieve a single item from the database by using its key
+  // Our app won't use this function but I put it here for your reference
+  Map<String, dynamic> _readItem(int key) {
+    final item = _shoppingBox.get(key);
+    return item;
+  }
+
+  // Update a single item
+  Future<void> _updateItem(int itemKey, Map<String, dynamic> item) async {
+    await _shoppingBox.put(itemKey, item);
+    _refreshItems(); // Update the UI
+  }
+
+  // Delete a single item
+  Future<void> _deleteItem(int itemKey) async {
+    await _shoppingBox.delete(itemKey);
+    _refreshItems(); // update the UI
+
+    // Display a snackbar
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('An item has been deleted')));
+  }
+
+  // TextFields' controllers
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _quantityController = TextEditingController();
+
+  // This function will be triggered when the floating button is pressed
+  // It will also be triggered when you want to update an item
+  void _showForm(BuildContext ctx, int? itemKey) async {
+    // itemKey == null -> create new item
+    // itemKey != null -> update an existing item
+
+    if (itemKey != null) {
+      final existingItem =
+          _items.firstWhere((element) => element['key'] == itemKey);
+      _nameController.text = existingItem['name'];
+      _quantityController.text = existingItem['quantity'];
+    }
+
+    showModalBottomSheet(
+        context: ctx,
+        elevation: 5,
+        isScrollControlled: true,
+        builder: (_) => Container(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(ctx).viewInsets.bottom,
+                  top: 15,
+                  left: 15,
+                  right: 15),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  TextField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(hintText: 'Name'),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextField(
+                    controller: _quantityController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(hintText: 'Quantity'),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      // Save new item
+                      if (itemKey == null) {
+                        _createItem({
+                          "name": _nameController.text,
+                          "quantity": _quantityController.text
+                        });
+                      }
+
+                      // update an existing item
+                      if (itemKey != null) {
+                        _updateItem(itemKey, {
+                          'name': _nameController.text.trim(),
+                          'quantity': _quantityController.text.trim()
+                        });
+                      }
+
+                      // Clear the text fields
+                      _nameController.text = '';
+                      _quantityController.text = '';
+
+                      Navigator.of(context).pop(); // Close the bottom sheet
+                    },
+                    child: Text(itemKey == null ? 'Create New' : 'Update'),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  )
+                ],
+              ),
+            ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('KindaCode.com'),
+      ),
+      body: _items.isEmpty
+          ? const Center(
+              child: Text(
+                'No Data',
+                style: TextStyle(fontSize: 30),
+              ),
+            )
+          : ListView.builder(
+              // the list of items
+              itemCount: _items.length,
+              itemBuilder: (_, index) {
+                final currentItem = _items[index];
+                return Card(
+                  color: Colors.orange.shade100,
+                  margin: const EdgeInsets.all(10),
+                  elevation: 3,
+                  child: ListTile(
+                      title: Text(currentItem['name']),
+                      subtitle: Text(currentItem['quantity'].toString()),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Edit button
+                          IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: () =>
+                                  _showForm(context, currentItem['key'])),
+                          // Delete button
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () => _deleteItem(currentItem['key']),
+                          ),
+                        ],
+                      )),
+                );
+              }),
+      // Add new item button
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showForm(context, null),
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+/*import 'package:flutter/material.dart';
+import 'db_lab6.dart';
+
+import 'dart:async';
+
+
+void main() {
+  runApp(MaterialApp(
+    home: const MyApp(),
+    //initialRoute: '/home',
+    routes: {
+      '/home': (context) => MyApp()
+      },
   ));
 }
 
@@ -83,7 +465,7 @@ class _MyAppState extends State<MyApp> {
   }
 }*/
 //***APPLICATION MAIN SEVEN: LAB5:FORMS..............................................................***/
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
@@ -173,7 +555,7 @@ class _MyAppState extends State<MyApp> {
           )),
     );
   }
-}
+}*/
 //***APPLICATION ASSESSMENT 2_____________________________________________________________________________*/
 /*import 'package:flutter/material.dart';
 import 'world_time.dart';

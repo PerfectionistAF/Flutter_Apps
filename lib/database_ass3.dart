@@ -1,5 +1,10 @@
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:sqflite_common/sqflite.dart';
+//import 'package:sqflite_common/sqflite_dev.dart';
+//import 'package:sqflite_common/sqflite_logger.dart';
+//import 'package:sqflite_common/sql.dart';
+//import 'package:sqflite_common/sqlite_api.dart';
 
 class mydatabaseclass {
   Database? mydb;
@@ -15,18 +20,17 @@ class mydatabaseclass {
 
   int Version = 1;
   initiatedatabase() async {
-    sqfliteFfiInit();
-    databaseFactory = databaseFactoryFfi;
     String databasedestination = await getDatabasesPath();
-    String databasepath = join(databasedestination, 'TABLE1.db');
+    String databasepath = join(databasedestination, 'CARDS.db');
     Database mydatabase1 = await openDatabase(
       databasepath,
       version: Version,
       onCreate: (db, version) {
         db.execute('''CREATE TABLE IF NOT EXISTS 'TABLE1'(
-      'ID' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-      'FIRST NAME' TEXT NOT NULL,
-      'SECOND NAME' TEXT NOT NULL)
+      'INDEX' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+      'NAME' TEXT NOT NULL,
+      'COMPANY' TEXT NOT NULL,
+      'EMAIL' TEXT MOT NULL)
        ''');
         print("Database has been created");
       },
@@ -36,13 +40,13 @@ class mydatabaseclass {
 
   checking() async {
     String databasedestination = await getDatabasesPath();
-    String databasepath = join(databasedestination, 'TABLE1.db');
-    await databaseExists(databasepath) ? print("it exists") : print("hardluck");
+    String databasepath = join(databasedestination, 'CARDS.db');
+    await databaseExists(databasepath) ? print("EXISTENT") : print("NONEXISTENT");
   }
 
   reseting() async {
     String databasedestination = await getDatabasesPath();
-    String databasepath = join(databasedestination, 'TABLE1.db');
+    String databasepath = join(databasedestination, 'CARDS.db');
     await deleteDatabase(databasepath);
   }
 
