@@ -1,6 +1,7 @@
-/*import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_application_2/main.dart';
-import 'package:flutter_application_2/database_ass3.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class Edit extends StatefulWidget {
   final edit_name;
@@ -118,4 +119,4 @@ class _EditState extends State<Edit> {
       ),
     );
   }
-}*/
+}

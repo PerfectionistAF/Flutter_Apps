@@ -1,9 +1,11 @@
 //***APPLICATION ASSESSMENT 3_____________________________________________________________________________*/
-/*import 'package:flutter_application_2/edit_ass3.dart';
+import 'package:flutter_application_2/edit_ass3.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/add_ass3.dart';
-import 'package:flutter_application_2/database_ass3.dart';
+//import 'package:flutter_application_2/add_ass3.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
+  //if using regular form technques
   List names = [
   'Ahmed'
   ];
@@ -13,230 +15,89 @@ import 'package:flutter_application_2/database_ass3.dart';
   List emails = [
   'ahmed@hotmail.com'
   ];
+  
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-void main() {
-  runApp(MaterialApp(
+  await Hive.initFlutter();
+  // await Hive.deleteBoxFromDisk('Business_Cards');
+  await Hive.openBox('Business_Cards');//start hive box
+  runApp(const MyBusinessCards());
+  
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}):super(key:key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
       title: 'Business Cards',
-      home: MyBusinessCards(),
+      home: const MyBusinessCards(),
       debugShowCheckedModeBanner: false,
+      /* FOR FORMS
       routes: {
         '/home': (context) => MyBusinessCards(), 
-        '/Add': (context) => Add()
-        }));
+        '/add': (context) => Add(),
+        '/edit':(context) => Edit()
+        }
+      */
+    );
+  }
 }
 
 class MyBusinessCards extends StatefulWidget {
-  const MyBusinessCards({super.key});
+  const MyBusinessCards({Key? key}) : super(key: key);
 
   @override
   State<MyBusinessCards> createState() => _MyBusinessCardsState();
 }
 
 class _MyBusinessCardsState extends State<MyBusinessCards> {
-  mydatabaseclass mydb = mydatabaseclass();
+  //if using hive database
+  //local databases are emulator and platform dependent
+  //so if the app can be both on phone and on web
+  //sqflite won't work
+  List<Map<String, dynamic>> _cards = [];
+  //DON'T move to global scope so add and edit pages can access it
+  //UNRELIABLE 
+  final _businessCards = Hive.box('Business_Cards'); 
   
-  List list_names = [];
-  List list_company = [];
-  List list_emails = [];
-
-  Future Reading_Database() async {
-    List<Map> response = await mydb.reading('''SELECT * FROM 'TABLE1' ''');
-    list_names = [];
-    list_company = [];
-    list_emails = [];
-    list_names.addAll(response);
-    list_company.addAll(response);
-    list_emails.addAll(response);
-    setState(() {});//set state with all the added lists
-  }
-
-  @override
-  void initState() {
-    Reading_Database();
-    super.initState();
-    mydb.checking();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.deepPurpleAccent.shade100,
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          /*onPressed: () async {
-          await mydb.writing('''INSERT INTO 'TABLE1' 
-          ('NAME', 'COMPANY', 'EMAIL') VALUES ("Alia","ASU","alia@email.com") ''');
-          Reading_Database();
-          setState(() {});
-        },*/
-          onPressed: () {
-            Navigator.pushReplacementNamed(context, '/Add');
-          }),
-      appBar: AppBar(
-        title: Text("Business Cards", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-        centerTitle: true,
-        backgroundColor: Colors.deepPurple.shade500,
-      ),
-      body: ListView.builder(
-          itemCount: names.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(10),
-              child: Card(
-                child: ListTile(
-                  onTap: () {
-                    print('you pressed on ${names[index]}');
-                  },
-                  leading: IconButton(
-                    /*onPressed: () {
-                    mydb.deleting(
-                        '''DELETE FROM TABLE1 WHERE ID = ${mylist[index]['ID']}''');
-                    mylist.removeWhere(
-                        (element) => element['ID'] == mylist[index]['ID']);
-                    setState(() {});
-                  },*/
-                      onPressed: () {
-                        setState(() {
-                          names.removeAt(index);
-                        });
-                      },
-                      icon: Icon(Icons.delete)),
-                  trailing: IconButton(
-                      onPressed: () {
-                        Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (context) {
-                          return Edit(edit_name: names[index], edit_company: company[index], edit_email: emails[index], index: index);
-                        }));
-                      },
-                      /*onPressed: () async {
-                    await mydb.updating('''UPDATE 'TABLE1' SET 
-                    'FIRST NAME' = 'Ain Shams University',
-                    'SECOND NAME' = 'Faculty of Engineering' WHERE ID = ${mylist[index]['ID']}
-                    ''');
-                    Reading_Database();
-                    setState(() {});
-                  },*/
-                      icon: Icon(Icons.edit)),
-                      
-                  title: Text(names[index]),
-                  subtitle: Text(company[index]),
-                ),
-              ),
-            );
-          }),
-    );
-  }
-}*/
-//***APPLICATION MAIN NINE: LAB6:DBS_EXAMPLE 2..............................................................***/
-/*import 'package:flutter/material.dart';
-import 'package:flutter_application_2/screens/notes_screen.dart';
-import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Local Database demo app',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const NotesScreen(),
-    );
-  }
-}*/
-//***APPLICATION MAIN EIGHT: LAB6:DBS..............................................................***/
-// main.dart
-import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  await Hive.initFlutter();
-  // await Hive.deleteBoxFromDisk('shopping_box');
-  await Hive.openBox('shopping_box');
-
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'KindaCode.com',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: const HomePage(),
-    );
-  }
-}
-
-// Home Page
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  List<Map<String, dynamic>> _items = [];
-
-  final _shoppingBox = Hive.box('shopping_box');
-
   @override
   void initState() {
     super.initState();
-    _refreshItems(); // Load data when app starts
+    _refreshItems(); //refresh items everytime main state is called
   }
-
-  // Get all items from the database
+  //database methods
+  //refresh state method
   void _refreshItems() {
-    final data = _shoppingBox.keys.map((key) {
-      final value = _shoppingBox.get(key);
-      return {"key": key, "name": value["name"], "quantity": value['quantity']};
+    final data = _businessCards.keys.map((key){
+      final value = _businessCards.get(key);
+      return {"key":key, "fullname":value["fullname"], "company":value["company"]};
     }).toList();
 
-    setState(() {
-      _items = data.reversed.toList();
-      // we use "reversed" to sort items in order from the latest to the oldest
+    setState((){
+      _cards = data.toList();//set the state
     });
   }
-
-  // Create new item
+  //create
   Future<void> _createItem(Map<String, dynamic> newItem) async {
-    await _shoppingBox.add(newItem);
+    await _businessCards.add(newItem);
     _refreshItems(); // update the UI
   }
-
-  // Retrieve a single item from the database by using its key
-  // Our app won't use this function but I put it here for your reference
+  //read a single item
   Map<String, dynamic> _readItem(int key) {
-    final item = _shoppingBox.get(key);
+    final item = _businessCards.get(key);
     return item;
   }
-
-  // Update a single item
+  //update a single item
   Future<void> _updateItem(int itemKey, Map<String, dynamic> item) async {
-    await _shoppingBox.put(itemKey, item);
+    await _businessCards.put(itemKey, item);
     _refreshItems(); // Update the UI
   }
-
-  // Delete a single item
+  //delete a single item
   Future<void> _deleteItem(int itemKey) async {
-    await _shoppingBox.delete(itemKey);
+    await _businessCards.delete(itemKey);
     _refreshItems(); // update the UI
 
     // Display a snackbar
@@ -244,25 +105,16 @@ class _HomePageState extends State<HomePage> {
     ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('An item has been deleted')));
   }
-
-  // TextFields' controllers
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _quantityController = TextEditingController();
-
-  // This function will be triggered when the floating button is pressed
-  // It will also be triggered when you want to update an item
-  void _showForm(BuildContext ctx, int? itemKey) async {
+  //text controllers
+  TextEditingController _name = TextEditingController();
+  TextEditingController _email = TextEditingController();
+  TextEditingController _company = TextEditingController();
+  //when adding call  _showForm_add to provide UI
+  void _showForm_add(BuildContext ctx, int? itemKey) async 
+  {
     // itemKey == null -> create new item
-    // itemKey != null -> update an existing item
-
-    if (itemKey != null) {
-      final existingItem =
-          _items.firstWhere((element) => element['key'] == itemKey);
-      _nameController.text = existingItem['name'];
-      _quantityController.text = existingItem['quantity'];
-    }
-
     showModalBottomSheet(
+      backgroundColor: Colors.deepPurpleAccent.shade100,
         context: ctx,
         elevation: 5,
         isScrollControlled: true,
@@ -277,104 +129,119 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   TextField(
-                    controller: _nameController,
-                    decoration: const InputDecoration(hintText: 'Name'),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: _quantityController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(hintText: 'Quantity'),
+                    controller: _name,
+                    decoration: const InputDecoration(hintText: 'Fullname'),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      // Save new item
-                      if (itemKey == null) {
-                        _createItem({
-                          "name": _nameController.text,
-                          "quantity": _quantityController.text
-                        });
-                      }
-
-                      // update an existing item
-                      if (itemKey != null) {
-                        _updateItem(itemKey, {
-                          'name': _nameController.text.trim(),
-                          'quantity': _quantityController.text.trim()
-                        });
-                      }
-
-                      // Clear the text fields
-                      _nameController.text = '';
-                      _quantityController.text = '';
-
-                      Navigator.of(context).pop(); // Close the bottom sheet
-                    },
-                    child: Text(itemKey == null ? 'Create New' : 'Update'),
+                  TextField(
+                    controller: _company,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(hintText: 'Company'),
                   ),
                   const SizedBox(
-                    height: 15,
-                  )
-                ],
+                    height: 20,
+                  ),
+                  TextField(
+                    controller: _email,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(hintText: 'Email'),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+            Padding(
+              padding: EdgeInsets.all(5.0),
+              child: ElevatedButton(
+                onPressed: () async {
+                  //new item
+                  if(itemKey == null){
+                    _createItem({
+                      "Fullname": _name.text,
+                      "Company": _company,
+                      "Email": _email
+                    });
+                  }
+                  // Clear the text fields
+                      _name.text = '';
+                      _company.text = '';
+                      _email.text = '';
+
+                      Navigator.of(context).pop();  
+                },
+                child: Text('Add', style: TextStyle(color: Colors.deepPurple.shade500, fontWeight: FontWeight.bold),),
               ),
-            ));
+            )
+          ],
+        ),
+      ),
+    );
   }
+  //when updating call _showForm_update 
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('KindaCode.com'),
-      ),
-      body: _items.isEmpty
-          ? const Center(
-              child: Text(
-                'No Data',
-                style: TextStyle(fontSize: 30),
-              ),
-            )
-          : ListView.builder(
-              // the list of items
-              itemCount: _items.length,
-              itemBuilder: (_, index) {
-                final currentItem = _items[index];
-                return Card(
-                  color: Colors.orange.shade100,
-                  margin: const EdgeInsets.all(10),
-                  elevation: 3,
-                  child: ListTile(
-                      title: Text(currentItem['name']),
-                      subtitle: Text(currentItem['quantity'].toString()),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Edit button
-                          IconButton(
-                              icon: const Icon(Icons.edit),
-                              onPressed: () =>
-                                  _showForm(context, currentItem['key'])),
-                          // Delete button
-                          IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () => _deleteItem(currentItem['key']),
-                          ),
-                        ],
-                      )),
-                );
-              }),
-      // Add new item button
+      backgroundColor: Colors.deepPurpleAccent.shade100,
+      //add
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showForm(context, null),
-        child: const Icon(Icons.add),
+          child: const Icon(Icons.add),
+          onPressed: () {
+            _showForm_add(context, null);
+            //Navigator.pushReplacementNamed(context, '/add');
+          }),
+      appBar: AppBar(
+        title: Text("Business Cards", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+        centerTitle: true,
+        backgroundColor: Colors.deepPurple.shade500,
       ),
+      body: ListView.builder(
+          itemCount: _cards.length,
+          itemBuilder: (_, index) {
+            final currentItem = _cards[index];
+            return Padding(
+              padding: const EdgeInsets.all(10),
+              child: Card(
+                child: ListTile(
+                  title: Text(currentItem['Fullname']),
+                  subtitle: Text(currentItem['Company']),
+                  onTap: () {
+                    //print('you pressed on ${names[index]}');
+                  },
+                  //delete
+                  leading: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          //names.removeAt(index);
+                        });
+                      },
+                      icon: Icon(Icons.delete)),
+                  
+                  //edit
+                  trailing: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) {
+                          return Edit(edit_name: names[index], edit_company: company[index], edit_email: emails[index], index: index);
+                        }));
+                      },
+                      icon: Icon(Icons.edit)),
+                ),
+              ),
+            );
+          }),
     );
   }
 }
+
+//***APPLICATION MAIN EIGHT: LAB6:SQFLITE DBS..............................................................***/
+// main.dart
+
 /*import 'package:flutter/material.dart';
 import 'db_lab6.dart';
 
