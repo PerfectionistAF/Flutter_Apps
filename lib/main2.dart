@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
@@ -19,9 +18,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'KindaCode.com',
+      title: 'Business Cards',
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        primarySwatch:  Colors.deepPurple,
       ),
       home: const HomePage(),
     );
@@ -114,6 +113,7 @@ class _HomePageState extends State<HomePage> {
         builder: (_) => Container(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(ctx).viewInsets.bottom,
+                  //bottom :200,
                   top: 15,
                   left: 15,
                   right: 15),
@@ -121,6 +121,21 @@ class _HomePageState extends State<HomePage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
+                  ListTile(
+                            leading: Material( 
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: (){
+                                  Navigator.of(context).pop();
+                                },
+                                child: Icon(Icons.arrow_back) // the arrow back icon
+                                ),
+                              ),                          
+                            title: Center(
+                              child: Text("My Title"), // Your desired title
+                              ),
+                  
+                  ),
                   TextField(
                     controller: _nameController,
                     decoration: const InputDecoration(hintText: 'Name'),
@@ -162,6 +177,7 @@ class _HomePageState extends State<HomePage> {
                     },
                     child: Text(itemKey == null ? 'Create New' : 'Update'),
                   ),
+                  
                   const SizedBox(
                     height: 15,
                   )

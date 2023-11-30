@@ -22,7 +22,7 @@ class _EditState extends State<Edit> {
     super.initState();
   }
 
-  GlobalKey<FormState> mykey = GlobalKey();
+  //GlobalKey<FormState> mykey = GlobalKey();
   TextEditingController edit_name = TextEditingController();
   TextEditingController edit_email = TextEditingController();
   TextEditingController edit_company = TextEditingController();
@@ -31,7 +31,11 @@ class _EditState extends State<Edit> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.deepPurpleAccent.shade100,
-      floatingActionButton: BackButton(),
+      floatingActionButton: BackButton(
+        onPressed: (){
+          Navigator.pushReplacementNamed(context, '/home');
+        },
+      ),
       appBar: AppBar(
         title: Text("Edit Card", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
         centerTitle: true,
@@ -42,7 +46,6 @@ class _EditState extends State<Edit> {
             child: ListView(
               children: [
                 Form(
-                    key: mykey,
                     child: Column(
                       children: [
                         TextFormField(
@@ -103,12 +106,12 @@ class _EditState extends State<Edit> {
               padding: EdgeInsets.all(5.0),
               child: ElevatedButton(
                 onPressed: () {
-                  names.removeAt(widget.index);
-                  names.insert(widget.index, edit_name.text);
+                  name.removeAt(widget.index);
+                  name.insert(widget.index, edit_name.text);
                   company.removeAt(widget.index);
                   company.insert(widget.index, edit_company.text);
-                  emails.removeAt(widget.index);
-                  emails.insert(widget.index, edit_email.text);
+                  email.removeAt(widget.index);
+                  email.insert(widget.index, edit_email.text);
                   Navigator.pushReplacementNamed(context, '/home');
                 },
                 child: Text('Edit', style: TextStyle(color: Colors.deepPurpleAccent.shade700),),

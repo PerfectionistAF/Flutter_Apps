@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/models/note_model.dart';
 import 'package:flutter_application_2/services/db_helper.dart';
-import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class NoteScreen extends StatelessWidget {
   final Note? note;

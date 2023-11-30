@@ -1,126 +1,122 @@
-//***APPLICATION ASSESSMENT 3_____________________________________________________________________________*/
-import 'package:flutter_application_2/edit_ass3.dart';
-import 'package:flutter/material.dart';
-//import 'package:flutter_application_2/add_ass3.dart';
-import 'package:hive/hive.dart';
+//***APPLICATION ASSESSMENT 3:BY HIVE DATABASES_____________________________________________________________________________*/
+/*import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-  //if using regular form technques
-  List names = [
-  'Ahmed'
-  ];
-  List company = [
-  'Schneider'
-  ];
-  List emails = [
-  'ahmed@hotmail.com'
-  ];
-  
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
-  // await Hive.deleteBoxFromDisk('Business_Cards');
-  await Hive.openBox('Business_Cards');//start hive box
-  runApp(const MyBusinessCards());
-  
+  // await Hive.deleteBoxFromDisk('cards_box');
+  await Hive.openBox('cards_box');
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}):super(key:key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Business Cards',
-      home: const MyBusinessCards(),
       debugShowCheckedModeBanner: false,
-      /* FOR FORMS
-      routes: {
-        '/home': (context) => MyBusinessCards(), 
-        '/add': (context) => Add(),
-        '/edit':(context) => Edit()
-        }
-      */
+      title: 'Business Cards',
+      theme: ThemeData(
+        primarySwatch:  Colors.deepPurple,
+      ),
+      home: const HomePage(),
     );
   }
 }
 
-class MyBusinessCards extends StatefulWidget {
-  const MyBusinessCards({Key? key}) : super(key: key);
+// Home Page
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  State<MyBusinessCards> createState() => _MyBusinessCardsState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _MyBusinessCardsState extends State<MyBusinessCards> {
-  //if using hive database
-  //local databases are emulator and platform dependent
-  //so if the app can be both on phone and on web
-  //sqflite won't work
-  List<Map<String, dynamic>> _cards = [];
-  //DON'T move to global scope so add and edit pages can access it
-  //UNRELIABLE 
-  final _businessCards = Hive.box('Business_Cards'); 
-  
+class _HomePageState extends State<HomePage> {
+  List _items = [];
+
+  final _cardsBox = Hive.box('cards_box');
+
   @override
   void initState() {
     super.initState();
-    _refreshItems(); //refresh items everytime main state is called
+    _refreshItems(); // Load data when app starts
   }
-  //database methods
-  //refresh state method
+
+  // Get all items from the database
   void _refreshItems() {
-    final data = _businessCards.keys.map((key){
-      final value = _businessCards.get(key);
-      return {"key":key, "fullname":value["fullname"], "company":value["company"]};
+    final data = _cardsBox.keys.map((key) {
+      final value = _cardsBox.get(key);
+      return {"key": key, "name": value["name"], "company": value['company'], "email":value['email']};
     }).toList();
 
-    setState((){
-      _cards = data.toList();//set the state
+    setState(() {
+      _items = data.reversed.toList();
+      //to sort items in order from the latest to the oldest
     });
   }
-  //create
+
+  // Create new item
   Future<void> _createItem(Map<String, dynamic> newItem) async {
-    await _businessCards.add(newItem);
+    await _cardsBox.add(newItem);
     _refreshItems(); // update the UI
   }
-  //read a single item
+
+  // Retrieve a single item from the database by using its key
+  // Our app won't use this function but I put it here for your reference
   Map<String, dynamic> _readItem(int key) {
-    final item = _businessCards.get(key);
+    final item = _cardsBox.get(key);
     return item;
   }
-  //update a single item
+
+  // Update a single item
   Future<void> _updateItem(int itemKey, Map<String, dynamic> item) async {
-    await _businessCards.put(itemKey, item);
+    await _cardsBox.put(itemKey, item);
     _refreshItems(); // Update the UI
   }
-  //delete a single item
+
+  // Delete a single item
   Future<void> _deleteItem(int itemKey) async {
-    await _businessCards.delete(itemKey);
+    await _cardsBox.delete(itemKey);
     _refreshItems(); // update the UI
 
     // Display a snackbar
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('An item has been deleted')));
+        const SnackBar(content: Text('Deleted Successfully')));
   }
-  //text controllers
-  TextEditingController _name = TextEditingController();
-  TextEditingController _email = TextEditingController();
-  TextEditingController _company = TextEditingController();
-  //when adding call  _showForm_add to provide UI
-  void _showForm_add(BuildContext ctx, int? itemKey) async 
-  {
+
+  // TextFields' controllers
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _companyController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+
+  // This function will be triggered when the floating button is pressed
+  // It will also be triggered when you want to update an item
+  void _showForm(BuildContext ctx, int? itemKey) async {
     // itemKey == null -> create new item
+    // itemKey != null -> update an existing item
+
+    if (itemKey != null) {
+      final existingItem =
+          _items.firstWhere((element) => element['key'] == itemKey);
+      _nameController.text = existingItem['name'];
+      _companyController.text = existingItem['company'];
+      _emailController.text = existingItem['email'];
+    }
+
     showModalBottomSheet(
-      backgroundColor: Colors.deepPurpleAccent.shade100,
         context: ctx,
         elevation: 5,
         isScrollControlled: true,
         builder: (_) => Container(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(ctx).viewInsets.bottom,
+                  //bottom :200,
                   top: 15,
                   left: 15,
                   right: 15),
@@ -128,61 +124,184 @@ class _MyBusinessCardsState extends State<MyBusinessCards> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
+                  ListTile(
+                            leading: Material( 
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: (){
+                                  Navigator.of(context).pop();
+                                },
+                                child: Icon(Icons.arrow_back) // the arrow back icon
+                                ),
+                              ),                          
+                            title: Center(
+                              child: Text(itemKey == null ? 'Add Card' : 'Edit Card',
+                              style: TextStyle(
+                                color: Colors.deepPurple.shade900,
+                                fontWeight: FontWeight.bold
+                                ),
+                                ), 
+                              ),
+                  
+                  ),
                   TextField(
-                    controller: _name,
-                    decoration: const InputDecoration(hintText: 'Fullname'),
+                    controller: _nameController,
+                    decoration: const InputDecoration(hintText: 'Name'),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   TextField(
-                    controller: _company,
-                    keyboardType: TextInputType.number,
+                    controller: _companyController,
                     decoration: const InputDecoration(hintText: 'Company'),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   TextField(
-                    controller: _email,
-                    keyboardType: TextInputType.number,
+                    controller: _emailController,
                     decoration: const InputDecoration(hintText: 'Email'),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  const SizedBox(
-                    height: 50,
-                  ),
-            Padding(
-              padding: EdgeInsets.all(5.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  //new item
-                  if(itemKey == null){
-                    _createItem({
-                      "Fullname": _name.text,
-                      "Company": _company,
-                      "Email": _email
-                    });
-                  }
-                  // Clear the text fields
-                      _name.text = '';
-                      _company.text = '';
-                      _email.text = '';
+                  ElevatedButton(
+                    onPressed: () async {
+                      // Save new item
+                      if (itemKey == null) {
+                        _createItem({
+                          "name": _nameController.text,
+                          "company": _companyController.text,
+                          "email": _emailController.text,
+                        });
+                      }
 
-                      Navigator.of(context).pop();  
-                },
-                child: Text('Add', style: TextStyle(color: Colors.deepPurple.shade500, fontWeight: FontWeight.bold),),
+                      // update an existing item
+                      if (itemKey != null) {
+                        _updateItem(itemKey, {
+                          'name': _nameController.text.trim(),
+                          'company': _companyController.text.trim(),
+                          'email': _emailController.text.trim(),
+                        });
+                      }
+
+                      // Clear the text fields
+                      _nameController.text = '';
+                      _companyController.text = '';
+                      _emailController.text = '';
+                      
+
+                      Navigator.of(context).pop(); // Close the bottom sheet
+                    },
+                    child: Text(itemKey == null ? 'Add' : 'Edit'),
+                  ),
+                  
+                  const SizedBox(
+                    height: 15,
+                  )
+                ],
+              ),
+            ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Business Cards'),
+      ),
+      body: _items.isEmpty
+          ? const Center(
+              child: Text(
+                'No Data Inserted Yet',
+                style: TextStyle(fontSize: 30),
               ),
             )
-          ],
-        ),
+          : ListView.builder(
+              // the list of items
+              itemCount: _items.length,
+              itemBuilder: (_, index) {
+                final currentItem = _items[index];
+                return Card(
+                  color: Colors.deepPurple.shade200,
+                  margin: const EdgeInsets.all(10),
+                  elevation: 3,
+                  child: ListTile(
+                      title: Text(currentItem['name'].toString()),
+                      subtitle: Text(currentItem['company'].toString()),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Edit button
+                          IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: () =>
+                                  _showForm(context, currentItem['key'])),
+                          // Delete button
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () => _deleteItem(currentItem['key']),
+                          ),
+                        ],
+                      )),
+                );
+              }),
+      // Add new item button
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showForm(context, null),
+        child: const Icon(Icons.add),
       ),
     );
   }
-  //when updating call _showForm_update 
+}*/
+//***APPLICATION ASSESSMENT 3:BY FORMS_____________________________________________________________________________*/
+import 'package:flutter_application_2/edit_ass3.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_application_2/add_ass3.dart';
 
+  //if using regular form technques
+  List name = [
+  'Ahmed'
+  ];
+  List company = [
+  'Schneider'
+  ];
+  List email = [
+  'ahmed@hotmail.com'
+  ];
+  
+void main() async {
+  runApp(MyApp()
+    );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Business Cards',
+      home: const MyBusinessCards(),
+      debugShowCheckedModeBanner: false,
+      /* FOR FORMS*/
+      routes: {
+        '/home': (context) => MyBusinessCards(), 
+        '/add': (context) => Add(),
+        //'/edit':(context) => Edit()
+        }
+    );
+  }
+}
+
+class MyBusinessCards extends StatefulWidget {
+  const MyBusinessCards({super.key});
+
+  @override
+  State<MyBusinessCards> createState() => _MyBusinessCardsState();
+}
+
+class _MyBusinessCardsState extends State<MyBusinessCards> {
 
   @override
   Widget build(BuildContext context) {
@@ -192,8 +311,7 @@ class _MyBusinessCardsState extends State<MyBusinessCards> {
       floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
           onPressed: () {
-            _showForm_add(context, null);
-            //Navigator.pushReplacementNamed(context, '/add');
+            Navigator.pushReplacementNamed(context, '/add');
           }),
       appBar: AppBar(
         title: Text("Business Cards", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
@@ -201,23 +319,23 @@ class _MyBusinessCardsState extends State<MyBusinessCards> {
         backgroundColor: Colors.deepPurple.shade500,
       ),
       body: ListView.builder(
-          itemCount: _cards.length,
-          itemBuilder: (_, index) {
-            final currentItem = _cards[index];
+          itemCount: name.length,
+          itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.all(10),
               child: Card(
                 child: ListTile(
-                  title: Text(currentItem['Fullname']),
-                  subtitle: Text(currentItem['Company']),
+                  title: Text(name[index]),
+                  subtitle: Text(company[index]),
                   onTap: () {
-                    //print('you pressed on ${names[index]}');
+                    print('you pressed on ${name[index]}');
                   },
                   //delete
                   leading: IconButton(
                       onPressed: () {
                         setState(() {
-                          //names.removeAt(index);
+                          name.removeAt(index);
+                          company.removeAt(index);
                         });
                       },
                       icon: Icon(Icons.delete)),
@@ -227,7 +345,7 @@ class _MyBusinessCardsState extends State<MyBusinessCards> {
                       onPressed: () {
                         Navigator.of(context).pushReplacement(
                             MaterialPageRoute(builder: (context) {
-                          return Edit(edit_name: names[index], edit_company: company[index], edit_email: emails[index], index: index);
+                          return Edit(edit_name: name[index], edit_company: company[index], edit_email: email[index], index: index);
                         }));
                       },
                       icon: Icon(Icons.edit)),
@@ -394,14 +512,14 @@ class _MyAppState extends State<MyApp> {
                           controller: emailcontroller,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return ('You forgot your Email');
+                              return ('You forgot your email');
                             } else {
                               return null;
                             }
                           },
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              hintText: 'Email',
+                              hintText: 'email',
                               icon: Icon(Icons.email)),
                         ),
                         SizedBox(

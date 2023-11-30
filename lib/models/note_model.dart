@@ -1,6 +1,4 @@
 //data model containing all the data in the class
-import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class Note{
   final int? id;
