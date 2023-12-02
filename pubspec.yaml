@@ -41,8 +41,14 @@ dependencies:
   http: ^1.1.0
   syncfusion_flutter_maps: ^23.2.4
   google_maps_flutter: ^2.5.0
-  #intl_phone_field: ^3.2.0
-  #email_validator: ^2.1.17
+  intl_phone_field: ^3.2.0
+  email_validator: ^2.1.17
+  firebase_core: ^2.24.0
+  firebase_auth: ^4.15.0
+  firebase_database: ^10.3.6
+  firebase_storage: ^11.5.3
+  firebase_messaging: ^14.7.6
+  fluttertoast: ^8.2.4
 
 
 dev_dependencies:

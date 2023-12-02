@@ -1,7 +1,13 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 //import 'package:kar_ride/themes/themes.dart';
 //import 'package:kar_ride/main.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:kar_ride/global/global.dart';
+import 'package:kar_ride/screens/home.dart';
 //TO DO:
 /*
 Validate inputs
@@ -29,11 +35,72 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final confirmpasswordEditText = TextEditingController();
 
   bool _passwordVisible = false;
+  bool _confirmPasswordVisible = false;
   //global key
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();//debugging label key
+  
+  //initialise state of controllers as clear or not clear
+  @override //override default method
+  void initState(){
+    super.initState();
+    nameEditText.addListener(onListen);
+    emailEditText.addListener(onListen);
+    phoneEditText.addListener(onListen);
+    addressEditText.addListener(onListen);
+    passwordEditText.addListener(onListen);
+    confirmpasswordEditText.addListener(onListen);
+  }
+  //clean up controllers to save memory
+  @override
+  void dispose(){
+    super.dispose();//upon rebuild
+    nameEditText.dispose();
+    emailEditText.dispose();
+    phoneEditText.dispose();
+    addressEditText.dispose();
+    passwordEditText.dispose();
+    confirmpasswordEditText.dispose();
+/////////LISTENERS
+//dispose of listener in fields
+    nameEditText.removeListener(onListen);
+    emailEditText.removeListener(onListen);
+    phoneEditText.removeListener(onListen);
+    addressEditText.removeListener(onListen);
+    passwordEditText.removeListener(onListen);
+    confirmpasswordEditText.removeListener(onListen);
+  }
+  
+  void onListen() => setState(() {/*update UI*/});
 
-
-
+  void _submit() async {//to register to real time db
+    if(_formKey.currentState!.validate()){//fixing null check to target error
+      await firebaseAuth.createUserWithEmailAndPassword(
+        email: emailEditText.text.trim(), password: passwordEditText.text.trim()
+        ).then((auth) async {
+          currentUser = auth.user; //authenticate current user
+          if(currentUser != null){
+            Map userMap = {
+              "id":currentUser!.uid,
+              "name":nameEditText.text.trim(),
+              "email":emailEditText.text.trim(),
+              "phone":phoneEditText.text.trim(),
+              "address":addressEditText.text.trim()
+            };//user map 
+            //add it to your db
+            DatabaseReference userRef = FirebaseDatabase.instance.ref().child("users");
+            userRef.child(currentUser!.uid).set(userMap);
+          }
+          await Fluttertoast.showToast(msg: "Registered Successfully");
+          Navigator.push(context, MaterialPageRoute(builder: (c)=>HomeScreen()));//if successful, go to maps
+        }).catchError((errorMessage){
+          Fluttertoast.showToast(msg: "Error: Cannot Register Account");
+        });
+    }
+    else{
+      Fluttertoast.showToast(msg: "Try Again: Not all fields are valid");
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
@@ -64,10 +131,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Form(
+                        key: _formKey,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
+                            ///////NAME//////
                             TextFormField(
                               inputFormatters: [
                                 LengthLimitingTextInputFormatter(60),
@@ -86,20 +155,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     style: BorderStyle.none,
                                   ),
                                 ),
-                                prefixIcon: Icon(Icons.person, color: Colors.blueGrey)
+                                prefixIcon: Icon(Icons.person, color: Colors.blueGrey),
+                                //clear inputs
+                                suffixIcon: nameEditText.text.isEmpty ? Container(width: 0) :  
+                                IconButton(
+                                icon:Icon(Icons.close, color: Colors.blueGrey),
+                                onPressed:(){
+                                  nameEditText.clear();
+                                },)//only show icon when there is text
                               ),
+                              autofillHints: [AutofillHints.name],//get past names from system
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               validator: (text){
                                 if(text == null || text.isEmpty){
-                                  return "can't be empty";
+                                  return "name field can't be empty";
                                 }
                                 if(text.length < 2){
-                                  return "please enter a valid value";
+                                  return "please enter a valid name";
                                 }
                                 if(text.length > 60){
-                                  return "value can't have more than 60 characters";
+                                  return "name can't have more than 60 characters";
                                 }
-                                return "";//blank text
+
+                                return "";//blank
                               },
                               onChanged: (text)=>setState(() {
                                 nameEditText.text = text;
@@ -107,12 +185,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             
                             SizedBox(height: 10,),
-                            ///////NAME//////
                             
+                            ///////EMAIL//////
                             TextFormField(
                               inputFormatters: [
                                 LengthLimitingTextInputFormatter(60),
                               ],
+                              keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
                                 hintText: 'Email',
                                 hintStyle: TextStyle(
@@ -127,21 +206,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     style: BorderStyle.none,
                                   ),
                                 ),
-                                prefixIcon: Icon(Icons.email, color: Colors.blueGrey)
+                                prefixIcon: Icon(Icons.email, color: Colors.blueGrey),
+                                //clear inputs
+                                suffixIcon: emailEditText.text.isEmpty ? Container(width: 0) :  
+                                IconButton(
+                                icon:Icon(Icons.close, color: Colors.blueGrey),
+                                onPressed:(){
+                                  nameEditText.clear();
+                                },
+                                )//only show icon when there is email
                               ),
                               autovalidateMode: AutovalidateMode.onUserInteraction,
+                              autofillHints: [AutofillHints.email],//get past emails from system
                               validator: (text){
                                 if(text == null || text.isEmpty){
-                                  return "can't be empty";
+                                  return "invalid email: can't be empty";
                                 }
-                                
+                                if((EmailValidator.validate(text) == true) && (text.contains("eng.asu.edu.eg", 6) == true)){
+                                  if(text.length > 60){
+                                    return "value can't have more than 60 characters";
+                                  }
+                                  //validity check with @eng.asu.edu.eg
+                                  return "valid email";
+                                }
+                                //if not validated
+                                //invalid:too short
                                 if(text.length < 2){
-                                  return "please enter a valid value";
+                                  return "invalid email: please enter a valid value";
                                 }
-                                if(text.length > 60){
-                                  return "value can't have more than 60 characters";
-                                }
-                                return "";//blank text
+                                return "invalid email: nonexistent";//invalid:nonexistent email
                               },
                               onChanged: (text)=>setState(() {
                                 emailEditText.text = text;
@@ -149,12 +242,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             
                             SizedBox(height: 10,),
-                            ///////EMAIL//////
-                            
-                            TextFormField(
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(60),
-                              ],
+
+                            ///////PHONE NUMBER//////
+                            IntlPhoneField(
+                              keyboardType: TextInputType.number,
+                              showCountryFlag: true,
+                              dropdownIcon: Icon(
+                                Icons.arrow_drop_down,
+                                color:Colors.blueGrey,
+                              ),
                               decoration: InputDecoration(
                                 hintText: 'Phone',
                                 hintStyle: TextStyle(
@@ -169,29 +265,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     style: BorderStyle.none,
                                   ),
                                 ),
-                                prefixIcon: Icon(Icons.phone, color: Colors.blueGrey)
                               ),
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
-                              validator: (text){
-                                if(text == null || text.isEmpty){
-                                  return "can't be empty";
-                                }
-                                if(text.length < 2){
-                                  return "please enter a valid value";
-                                }
-                                if(text.length > 60){
-                                  return "value can't have more than 60 characters";
-                                }
-                                return "";//blank text
-                              },
+                              initialCountryCode: 'EG',//egypt country code
                               onChanged: (text)=>setState(() {
-                                phoneEditText.text = text;
+                                phoneEditText.text = text.completeNumber;
                               }),
                             ),
                             
                             SizedBox(height: 10,),
-                            ///////PHONE NUMBER//////
                             
+                            ///////ADDRESS//////
                             TextFormField(
                               inputFormatters: [
                                 LengthLimitingTextInputFormatter(60),
@@ -210,18 +293,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     style: BorderStyle.none,
                                   ),
                                 ),
-                                prefixIcon: Icon(Icons.home, color: Colors.blueGrey)
+                                prefixIcon: Icon(Icons.home, color: Colors.blueGrey),
+                                //clear inputs
+                                suffixIcon: addressEditText.text.isEmpty ? Container(width: 0) :  
+                                IconButton(
+                                icon:Icon(Icons.close, color: Colors.blueGrey),
+                                onPressed:(){
+                                  nameEditText.clear();
+                                },
+                                )//only show icon when there is address
                               ),
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               validator: (text){
                                 if(text == null || text.isEmpty){
-                                  return "can't be empty";
+                                  return "address can't be empty";
                                 }
                                 if(text.length < 2){
-                                  return "please enter a valid value";
+                                  return "please enter a valid address";
                                 }
                                 if(text.length > 60){
-                                  return "value can't have more than 60 characters";
+                                  return "address can't have more than 60 characters";
                                 }
                                 return "";//blank text
                               },
@@ -231,11 +322,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             
                             SizedBox(height: 10,),
-                            ///////ADDRESS//////
-                            
+
+                            ///////PASSWORD//////
                             TextFormField(
+                              obscureText: !_passwordVisible, //make it true to hide the pass
                               inputFormatters: [
-                                LengthLimitingTextInputFormatter(60),
+                                LengthLimitingTextInputFormatter(50),
                               ],
                               decoration: InputDecoration(
                                 hintText: 'Password',
@@ -251,7 +343,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     style: BorderStyle.none,
                                   ),
                                 ),
-                                prefixIcon: Icon(Icons.key, color: Colors.blueGrey)
+                                prefixIcon: Icon(Icons.key, color: Colors.blueGrey),
+                                suffixIcon: IconButton(
+                                  icon: Icon(_passwordVisible? Icons.visibility : Icons.visibility_off, 
+                                  color: Colors.blueGrey),
+                                  onPressed: (){
+                                    setState(() {
+                                      //update password: toggle the state whichever it lands on  
+                                      _passwordVisible = !_passwordVisible;
+                                    });
+                                  },
+                                    ),
                               ),
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               validator: (text){
@@ -259,10 +361,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   return "can't be empty";
                                 }
                                 if(text.length < 2){
-                                  return "please enter a valid value";
+                                  return "password should be between 2-50 characters";
                                 }
-                                if(text.length > 60){
-                                  return "value can't have more than 60 characters";
+                                if(text.length > 49){
+                                  return "password should be less than 50 characters";
                                 }
                                 return "";//blank text
                               },
@@ -272,9 +374,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             
                             SizedBox(height: 10,),
-                            ///////PASSWORD//////
-                            
+
+                            ///////CONFIRM PASSWORD//////
                             TextFormField(
+                              obscureText: !_confirmPasswordVisible, //make it true to hide the pass
                               inputFormatters: [
                                 LengthLimitingTextInputFormatter(60),
                               ],
@@ -292,18 +395,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     style: BorderStyle.none,
                                   ),
                                 ),
-                                prefixIcon: Icon(Icons.lock, color: Colors.blueGrey)
+                                prefixIcon: Icon(Icons.lock, color: Colors.blueGrey),
+                                suffixIcon: IconButton(
+                                  icon: Icon(_confirmPasswordVisible? Icons.visibility : Icons.visibility_off, 
+                                  color: Colors.blueGrey),
+                                  onPressed: (){
+                                    setState(() {
+                                      //update confirm password: toggle the state whichever it lands on  
+                                      _confirmPasswordVisible = !_confirmPasswordVisible;
+                                    });
+                                  },
+                                    ),
                               ),
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               validator: (text){
                                 if(text == null || text.isEmpty){
                                   return "can't be empty";
                                 }
-                                if(text.length < 2){
-                                  return "please enter a valid value";
+                                if(text != passwordEditText.text){
+                                  return "passwords do not match";
                                 }
-                                if(text.length > 60){
-                                  return "value can't have more than 60 characters";
+                                if(text.length < 2){
+                                  return "password should be between 2-50 characters";
+                                }
+                                if(text.length > 49){
+                                  return "password should be less than 50 characters";
                                 }
                                 return "";//blank text
                               },
@@ -312,8 +428,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               }),
                             ),
                             
-                            SizedBox(height: 10,),
-                            ///////CONFIRM PASSWORD//////
+                            SizedBox(height: 20,),
+                            
+
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 //primary
@@ -327,7 +444,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 minimumSize: Size(double.infinity, 50)
                               ),
                               onPressed: (){
-                                //_submit(),
+                                _submit();
                               },
                               child:Text(
                                 'Register',
