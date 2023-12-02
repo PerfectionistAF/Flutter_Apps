@@ -10,13 +10,15 @@ import 'package:kar_ride/global/global.dart';
 import 'package:kar_ride/screens/home.dart';
 //TO DO:
 /*
+FIXED:
 Validate inputs
 Initialise country code
 Save inputs to firebase---_submit function
+Handle buttons
+Check nulls and text is handled well
+
 
 FIX DARK THEME
-HANDLE BUTTONS
-CHECK TEXT IS HANDLED WELL
 */
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -88,16 +90,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
             };//user map 
             //add it to your db
             DatabaseReference userRef = FirebaseDatabase.instance.ref().child("users");
-            userRef.child(currentUser!.uid).set(userMap);
+            return userRef.child(currentUser!.uid).set(userMap);
           }
           await Fluttertoast.showToast(msg: "Registered Successfully");
           Navigator.push(context, MaterialPageRoute(builder: (c)=>HomeScreen()));//if successful, go to maps
         }).catchError((errorMessage){
-          Fluttertoast.showToast(msg: "Error: Cannot Register Account");
+          Fluttertoast.showToast(msg:errorMessage.toString());
         });
     }
     else{
-      Fluttertoast.showToast(msg: "Try Again: Not all fields are valid");
+      debugPrint(_formKey.currentState!.validate().toString());
+      Fluttertoast.showToast(msg: "Try Again");
     }
   }
   
@@ -106,6 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
     
     return GestureDetector(
+      //key: _formKey, ERROR ONLY ONE WIDGET SHOULD USE THIS    
       onTap:(){
         FocusScope.of(context).unfocus();
       },
@@ -177,7 +181,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   return "name can't have more than 60 characters";
                                 }
 
-                                return "";//blank
+                                return null;//blank--valid name, no errors
                               },
                               onChanged: (text)=>setState(() {
                                 nameEditText.text = text;
@@ -227,7 +231,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     return "value can't have more than 60 characters";
                                   }
                                   //validity check with @eng.asu.edu.eg
-                                  return "valid email";
+                                  return null; //valid email--no errors
                                 }
                                 //if not validated
                                 //invalid:too short
@@ -314,7 +318,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 if(text.length > 60){
                                   return "address can't have more than 60 characters";
                                 }
-                                return "";//blank text
+                                return null;//no errors
                               },
                               onChanged: (text)=>setState(() {
                                 addressEditText.text = text;
@@ -366,7 +370,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 if(text.length > 49){
                                   return "password should be less than 50 characters";
                                 }
-                                return "";//blank text
+                                return null;//no errors
                               },
                               onChanged: (text)=>setState(() {
                                 passwordEditText.text = text;
@@ -421,7 +425,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 if(text.length > 49){
                                   return "password should be less than 50 characters";
                                 }
-                                return "";//blank text
+                                return null;//all formfields have no errors--should validate
                               },
                               onChanged: (text)=>setState(() {
                                 confirmpasswordEditText.text = text;
@@ -444,9 +448,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 minimumSize: Size(double.infinity, 50)
                               ),
                               onPressed: (){
+                                debugPrint(_formKey.toString());
+                                 if (_formKey.currentState!.validate()) {
+                                    // If the form is valid, display a snackbar. In the real world,
+                                    // you'd often call a server or save the information in a database.
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Processing Request')),
+                                    );
+                                  }
                                 _submit();
                               },
-                              child:Text(
+                              child:const Text(
                                 'Register',
                                 style: TextStyle(
                                   fontSize: 20,

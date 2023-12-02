@@ -6,11 +6,15 @@ import 'package:kar_ride/screens/login.dart';
 import 'package:kar_ride/screens/routes.dart';
 import 'package:kar_ride/themes/themes.dart';
 import 'package:kar_ride/splash_screen/splash_screen.dart';
+import 'package:kar_ride/firebase_options.dart';
 
-Future<void> main()async {
-  runApp(MyApp());
+void main()async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    //import firebase.options file
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
