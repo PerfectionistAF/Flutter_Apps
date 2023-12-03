@@ -17,7 +17,7 @@ FIX NULL EXCEPTIONS WHEN MAP FIRST SHOWS
 */
 
 //try first line from new cairo to asu
-late List<Model> lines = [
+List<Model> lines = [
   Model(MapLatLng(30.0074, 31.4913), MapLatLng(30.0766, 31.2845))
   ];
 

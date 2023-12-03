@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:kar_ride/assistants/assistant_methods.dart';
 import 'package:kar_ride/global/global.dart';
 import 'package:kar_ride/screens/home.dart';
@@ -22,7 +21,7 @@ Fix timer
 */
   startTimer(){  //duration until snapshot is received
     Timer(Duration(seconds: 3), () async {
-      if(await firebaseAuth.currentUser != null){
+      if(firebaseAuth.currentUser != null){
         //if current user is authenticated as non-null, call read method that creates a user model with all the info
         //else keep it as null
         firebaseAuth.currentUser != null ? AssistantMethods.readCurrentOnlineUserInfo() : null;
