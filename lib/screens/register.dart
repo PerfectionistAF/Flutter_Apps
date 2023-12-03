@@ -216,7 +216,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 IconButton(
                                 icon:Icon(Icons.close, color: Colors.blueGrey),
                                 onPressed:(){
-                                  nameEditText.clear();
+                                  emailEditText.clear();
                                 },
                                 )//only show icon when there is email
                               ),
@@ -364,8 +364,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 if(text == null || text.isEmpty){
                                   return "can't be empty";
                                 }
-                                if(text.length < 2){
-                                  return "password should be between 2-50 characters";
+                                if(text.length < 6){
+                                  return "password should be between 6-50 characters";
                                 }
                                 if(text.length > 49){
                                   return "password should be less than 50 characters";
@@ -419,8 +419,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 if(text != passwordEditText.text){
                                   return "passwords do not match";
                                 }
-                                if(text.length < 2){
-                                  return "password should be between 2-50 characters";
+                                if(text.length < 6){
+                                  return "password should be between 6-50 characters";
                                 }
                                 if(text.length > 49){
                                   return "password should be less than 50 characters";
@@ -450,8 +450,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               onPressed: (){
                                 debugPrint(_formKey.toString());
                                  if (_formKey.currentState!.validate()) {
-                                    // If the form is valid, display a snackbar. In the real world,
-                                    // you'd often call a server or save the information in a database.
+                                  //differentiate between form validation and rt db
+                                  //snackbar here, in db toast
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(content: Text('Processing Request')),
                                     );

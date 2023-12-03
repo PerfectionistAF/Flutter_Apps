@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       theme:Themes.lightTheme,
       darkTheme: Themes.darkTheme,
       debugShowCheckedModeBanner: false,
-      home: RegisterScreen(),
+      home: SplashScreen(),
       routes:{
         "/Home":(context)=>HomeScreen(),
         "/Routes":(context)=>RoutesScreen(),

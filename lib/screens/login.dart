@@ -1,14 +1,21 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//import 'package:kar_ride/themes/themes.dart';
-//import 'package:kar_ride/main.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:kar_ride/global/global.dart';
+import 'package:kar_ride/themes/themes.dart';
+import 'package:kar_ride/main.dart';
+import 'package:kar_ride/screens/home.dart';
 //TO DO:
 /*
+FIXED
 Authenticate with firebase con
+Handle buttons
+Check nulls and text is handled well
 
 FIX DARK THEME
-HANDLE BUTTONS
-CHECK TEXT IS HANDLED WELL
 */
 
 class LoginScreen extends StatefulWidget {
@@ -20,13 +27,56 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
 
-  //final emailEditText = TextEditingController();
-  final phoneEditText = TextEditingController();
+  final emailEditText = TextEditingController();
+  //final phoneEditText = TextEditingController();
   final passwordEditText = TextEditingController();
   
   //Global key
   final _formKey = GlobalKey<FormState>();
+  bool _passwordVisible = false;
+  
+  //initialise state of controllers as clear or not clear
+  @override //override default method
+  void initState(){
+    super.initState();
+    emailEditText.addListener(onListen);
+    //phoneEditText.addListener(onListen);
+    passwordEditText.addListener(onListen);
+  }
+  //clean up controllers to save memory
+  @override
+  void dispose(){
+    super.dispose();//upon rebuild
+    emailEditText.dispose();
+    //phoneEditText.dispose();
+    passwordEditText.dispose();
+/////////LISTENERS
+//dispose of listener in fields
+    emailEditText.removeListener(onListen);
+    //phoneEditText.removeListener(onListen);
+    passwordEditText.removeListener(onListen);
+  }
+  
+  void onListen() => setState(() {/*update UI*/});
 
+  void _submit() async {//to register to real time db
+    if(_formKey.currentState!.validate()){//fixing null check to target error
+      await firebaseAuth.signInWithEmailAndPassword(
+        email: emailEditText.text.trim(), password: passwordEditText.text.trim()
+        ).then((auth) async {
+          currentUser = auth.user; //authenticate current user
+
+          await Fluttertoast.showToast(msg: "Login Successful");
+          Navigator.push(context, MaterialPageRoute(builder: (c)=>HomeScreen()));//if successful, go to maps
+        }).catchError((errorMessage){
+          Fluttertoast.showToast(msg:errorMessage.toString());
+        });
+    }
+    else{
+      debugPrint(_formKey.currentState!.validate().toString());
+      Fluttertoast.showToast(msg: "Try Again");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,16 +109,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Form(
+                        key: _formKey,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
+                            ///////EMAIL//////
                             TextFormField(
                               inputFormatters: [
                                 LengthLimitingTextInputFormatter(60),
                               ],
+                              keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
-                                hintText: 'Phone',
+                                hintText: 'Email',
                                 hintStyle: TextStyle(
                                   color: Colors.grey,
                                 ),
@@ -81,32 +134,48 @@ class _LoginScreenState extends State<LoginScreen> {
                                     style: BorderStyle.none,
                                   ),
                                 ),
-                                prefixIcon: Icon(Icons.phone, color: Colors.blueGrey)
+                                prefixIcon: Icon(Icons.email, color: Colors.blueGrey),
+                                //clear inputs
+                                suffixIcon: emailEditText.text.isEmpty ? Container(width: 0) :  
+                                IconButton(
+                                icon:Icon(Icons.close, color: Colors.blueGrey),
+                                onPressed:(){
+                                  emailEditText.clear();
+                                },
+                                )//only show icon when there is email
                               ),
                               autovalidateMode: AutovalidateMode.onUserInteraction,
+                              autofillHints: [AutofillHints.email],//get past emails from system
                               validator: (text){
                                 if(text == null || text.isEmpty){
-                                  return "can't be empty";
+                                  return "invalid email: can't be empty";
                                 }
+                                if((EmailValidator.validate(text) == true) && (text.contains("eng.asu.edu.eg", 6) == true)){
+                                  if(text.length > 60){
+                                    return "value can't have more than 60 characters";
+                                  }
+                                  //validity check with @eng.asu.edu.eg
+                                  return null; //valid email--no errors
+                                }
+                                //if not validated
+                                //invalid:too short
                                 if(text.length < 2){
-                                  return "please enter a valid value";
+                                  return "invalid email: please enter a valid value";
                                 }
-                                if(text.length > 60){
-                                  return "value can't have more than 60 characters";
-                                }
-                                return "";//blank text
+                                return "invalid email: nonexistent";//invalid:nonexistent email
                               },
                               onChanged: (text)=>setState(() {
-                                phoneEditText.text = text;
+                                emailEditText.text = text;
                               }),
                             ),
                             
                             SizedBox(height: 10,),
-                            ///////PHONE NUMBER//////
-                            
+
+                            ///////PASSWORD//////
                             TextFormField(
+                              obscureText: !_passwordVisible, //make it true to hide the pass
                               inputFormatters: [
-                                LengthLimitingTextInputFormatter(60),
+                                LengthLimitingTextInputFormatter(50),
                               ],
                               decoration: InputDecoration(
                                 hintText: 'Password',
@@ -122,29 +191,39 @@ class _LoginScreenState extends State<LoginScreen> {
                                     style: BorderStyle.none,
                                   ),
                                 ),
-                                prefixIcon: Icon(Icons.key, color: Colors.blueGrey)
+                                prefixIcon: Icon(Icons.key, color: Colors.blueGrey),
+                                suffixIcon: IconButton(
+                                  icon: Icon(_passwordVisible? Icons.visibility : Icons.visibility_off, 
+                                  color: Colors.blueGrey),
+                                  onPressed: (){
+                                    setState(() {
+                                      //update password: toggle the state whichever it lands on  
+                                      _passwordVisible = !_passwordVisible;
+                                    });
+                                  },
+                                    ),
                               ),
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               validator: (text){
                                 if(text == null || text.isEmpty){
                                   return "can't be empty";
                                 }
-                                if(text.length < 2){
-                                  return "please enter a valid value";
+                                if(text.length < 6){
+                                  return "password should be between 6-50 characters";
                                 }
-                                if(text.length > 60){
-                                  return "value can't have more than 60 characters";
+                                if(text.length > 49){
+                                  return "password should be less than 50 characters";
                                 }
-                                return "";//blank text
+                                return null;//no errors
                               },
                               onChanged: (text)=>setState(() {
                                 passwordEditText.text = text;
                               }),
                             ),
                             
-                            SizedBox(height: 10,),
-                            ///////PASSWORD//////
+                            SizedBox(height: 20,),
                             
+                            ///LOGIN BUTTON
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: darkTheme? Colors.black : Colors.white, backgroundColor: darkTheme? Colors.deepPurple.shade300 : Colors.amber.shade900,
@@ -155,7 +234,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                 minimumSize: Size(double.infinity, 50)
                               ),
                               onPressed: (){
-                                //_submit(),
+                                debugPrint(_formKey.toString());
+                                 if (_formKey.currentState!.validate()) {
+                                  //differentiate between form validation and rt db
+                                  //snackbar here, in db toast
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Processing Request')),
+                                    );
+                                  }
+                                _submit();
                               },
                               child:Text(
                                 'Login',
@@ -165,7 +252,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                             ),
-                            ///LOGIN BUTTON
+                            ////FORGOT PASSWORD
                             SizedBox(height: 20,),
                             GestureDetector(
                               onTap: (){},
@@ -176,9 +263,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                             ),
-                            ////FORGOT PASSWORD
-                            SizedBox(height: 20,),
                             
+                            SizedBox(height: 20,),
+                            ////DON'T HAVE AN ACCOUNT
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
