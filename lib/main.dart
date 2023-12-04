@@ -4,7 +4,10 @@ import 'package:kar_ride/screens/home.dart';
 import 'package:kar_ride/screens/register.dart';
 import 'package:kar_ride/screens/login.dart';
 import 'package:kar_ride/screens/routes.dart';
+import 'package:kar_ride/screens/history.dart';
 import 'package:kar_ride/screens/profile.dart';
+import 'package:kar_ride/screens/pay.dart';
+import 'package:kar_ride/screens/forgot_pass.dart';
 import 'package:kar_ride/themes/themes.dart';
 import 'package:kar_ride/splash_screen/splash_screen.dart';
 import 'package:kar_ride/firebase_options.dart';
@@ -34,8 +37,11 @@ class MyApp extends StatelessWidget {
         "/Home":(context)=>HomeScreen(),
         "/Profile":(context)=>ProfileScreen(),
         "/Routes":(context)=>RoutesScreen(),
+        "/History":(context)=>HistoryScreen(),
+        "/Pay":(context)=>PaymentScreen(),
         "/Register":(context)=>RegisterScreen(),
         "/Login":(context)=>LoginScreen(),
+        "/ForgotPassword":(context)=>ForgotPasswordScreen(),
       },
     );
   }

@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:kar_ride/global/global.dart';
-import 'package:kar_ride/screens/home.dart';
 import 'package:kar_ride/assistants/assistant_methods.dart';
-import 'package:kar_ride/splash_screen/splash_screen.dart';
+import 'package:kar_ride/global/global.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class PaymentScreen extends StatefulWidget {
+  const PaymentScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
+   bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
     AssistantMethods.readCurrentOnlineUserInfo();
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(title: Text("My Profile", style: 
+    return GestureDetector(
+      onTap:(){
+        FocusScope.of(context).unfocus();
+      },
+      child:Scaffold(
+        appBar: AppBar(title: Text("Pay Now", style: 
                 TextStyle(fontFamily: 'Cairo',
                           fontSize: 25,
                           fontWeight: FontWeight.w800,),),
@@ -51,11 +52,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SizedBox(height: 20,),
                   ListTile(
                     leading: Icon(
-                      Icons.emoji_transportation_rounded,
+                      Icons.home,
                     ),
-                    title: const Text('Reserve Ride'),//Reserve Ride//from routes page///change colour of polyline
+                    title: const Text('Home'),//Home//show map from home page///(later)change colour of polyline
                     onTap: () {
-                      Navigator.pushReplacementNamed(context, "/Routes");
+                      Navigator.pushReplacementNamed(context, "/Home");
                     },
                   ),
                   ListTile(
@@ -70,38 +71,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
               ),
-        body: Center(
-          //padding: EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(60),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 5,
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
+          body:Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Pay now\n", style:TextStyle(fontSize: 30, fontWeight: FontWeight.bold)
                 ),
-                child: CircleAvatar(
-                  radius: 40,
-                  backgroundImage: AssetImage("assets/images/person.png"),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                currentUser!.email.toString(),
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ],
+                SizedBox(height: 20,),
+                Text(
+                  "100", style:TextStyle(fontSize: 30, fontWeight: FontWeight.bold)
+                  ),
+              ],
+            ),
           ),
-        ),
       ),
     );
   }

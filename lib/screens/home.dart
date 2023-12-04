@@ -4,6 +4,8 @@ import 'package:kar_ride/global/global.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 import 'package:kar_ride/assistants/assistant_methods.dart';
 import 'package:kar_ride/splash_screen/splash_screen.dart';
+import 'dart:math' as math;
+import 'package:random_color/random_color.dart';
 
 //TO DO:
 /*
@@ -20,8 +22,11 @@ FIX NULL EXCEPTIONS WHEN MAP FIRST SHOWS
 */
 
 //try first line from new cairo to asu
-List<Model> lines = [
-  Model(MapLatLng(30.0074, 31.4913), MapLatLng(30.0766, 31.2845))
+List<Model> startLines = [
+  Model(MapLatLng(30.0074, 31.4913), MapLatLng(30.0766, 31.2845)),//to asu
+  Model(MapLatLng(30.0511, 31.3656), MapLatLng(30.0766, 31.2845)),
+  Model(MapLatLng(30.1123, 31.3439), MapLatLng(30.0766, 31.2845)),
+  Model(MapLatLng(30.0131, 31.2089), MapLatLng(30.0766, 31.2845)), 
   ];
 
 class HomeScreen extends StatefulWidget {
@@ -42,6 +47,8 @@ class _HomeScreenState extends State<HomeScreen> {
   double bottomPaddingOfMap = 0;
   List<LatLng> coordinateList = [];
 
+  final rnd = math.Random();
+  Color getRandomColor() => Color(rnd.nextInt(0xffffffff));
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     title: const Text('Ride History'),//Rides History
                     onTap: () {
-                      Navigator.pop(context);//ride history
+                      Navigator.pushReplacementNamed(context, "/History");//ride history
                     },
                   ),
                 ],
@@ -113,8 +120,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   layers: [
                     MapTileLayer(
                       urlTemplate:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      initialFocalLatLng: MapLatLng(30.0444, 31.2357),
+                      initialFocalLatLng: MapLatLng(30.0766, 31.2845),
                       initialZoomLevel: 8,
+                      markerBuilder: (BuildContext context, int index) {
+                      
+                      return MapMarker(//fixed marker for all available locations
+                        latitude: startLines[index].from.latitude,
+                        longitude: startLines[index].from.longitude,
+                        iconType: MapIconType.circle,
+                        size: Size(10, 10),
+                        alignment: Alignment.center,
+                        offset: Offset(0, 9),
+                        iconColor: Colors.red[600],
+                        iconStrokeColor: Colors.red[900],
+                        iconStrokeWidth: 2,
+                      );},
+
                       zoomPanBehavior:MapZoomPanBehavior(
                         enableDoubleTapZooming: true,
                         enablePanning: true,
@@ -126,13 +147,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       sublayers: [
                         MapLineLayer(
-                          color: Colors.purple.shade900,
+                          //random colors
+                          color: Colors.deepPurple[900],
                           lines: List<MapLine>.generate(
-                            lines.length,
+                            startLines.length,
                             (int index) {
                               return MapLine(
-                                from: lines[index].from,
-                                to: lines[index].to,
+                                from: startLines[index].from,
+                                to: startLines[index].to,
                               );
                             },
                             ).toSet(),
@@ -141,28 +163,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                   ),
-              ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: darkTheme? Colors.black : Colors.white, 
-                backgroundColor: darkTheme? Colors.deepPurple.shade300 : Colors.amber.shade900,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(32),
-                ),
-                minimumSize: Size(double.infinity, 50)
-                ),
-              onPressed: (){
-                Navigator.pushReplacementNamed(context, "/Routes");
-              //_submit(),
-              },
-              child:Text(
-              'Choose Route',
-              style: TextStyle(
-              fontSize: 20,
-              color: Colors.white,
-              ),
-              ),
-              ),
               ],
             ), 
           ),
