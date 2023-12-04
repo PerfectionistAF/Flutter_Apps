@@ -94,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Text(
                   'Login',
                   style: TextStyle(
-                    color: darkTheme ? Colors.deepPurpleAccent.shade400 : Colors.amber.shade900,
+                    color: darkTheme ? Colors.deepPurpleAccent.shade400 : Colors.yellow.shade900,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
@@ -223,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ///LOGIN BUTTON
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: darkTheme? Colors.black : Colors.white, backgroundColor: darkTheme? Colors.deepPurple.shade300 : Colors.amber.shade900,
+                                foregroundColor: darkTheme? Colors.black : Colors.white, backgroundColor: darkTheme? Colors.deepPurple.shade300 : Colors.yellow.shade900,
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(32),

@@ -20,7 +20,7 @@ Fix firebase assistance
 Fix timer
 */
   startTimer(){  //duration until snapshot is received
-    Timer(Duration(seconds: 3), () async {
+    Timer(Duration(seconds: 5), () async {
       if(firebaseAuth.currentUser != null){
         //if current user is authenticated as non-null, call read method that creates a user model with all the info
         //else keep it as null
@@ -31,6 +31,7 @@ Fix timer
       else{
         Navigator.push(context, MaterialPageRoute(builder: (c)=>LoginScreen()));//then go to LoginScreen
       }
+        
      });
   }
   
@@ -53,6 +54,7 @@ Fix timer
             fontSize: 40,
             fontWeight: FontWeight.w800,
             fontStyle: FontStyle.italic,
+            color: Colors.grey[900],
           ),
         ),
       ),

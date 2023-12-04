@@ -124,7 +124,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Text(
                   'Register',
                   style: TextStyle(
-                    color: darkTheme ? Colors.deepPurpleAccent.shade400 : Colors.amber.shade900,
+                    color: darkTheme ? Colors.deepPurpleAccent.shade400 : Colors.yellow.shade900,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
@@ -438,7 +438,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 //primary
-                                backgroundColor:darkTheme? Colors.deepPurple.shade300 : Colors.amber.shade900,
+                                backgroundColor:darkTheme? Colors.deepPurple.shade300 : Colors.yellow.shade900,
                                 //onPrimary
                                 foregroundColor: darkTheme? Colors.black : Colors.white,
                                 elevation: 0,

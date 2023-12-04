@@ -4,6 +4,7 @@ import 'package:kar_ride/screens/home.dart';
 import 'package:kar_ride/screens/register.dart';
 import 'package:kar_ride/screens/login.dart';
 import 'package:kar_ride/screens/routes.dart';
+import 'package:kar_ride/screens/profile.dart';
 import 'package:kar_ride/themes/themes.dart';
 import 'package:kar_ride/splash_screen/splash_screen.dart';
 import 'package:kar_ride/firebase_options.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
       home: SplashScreen(),
       routes:{
         "/Home":(context)=>HomeScreen(),
+        "/Profile":(context)=>ProfileScreen(),
         "/Routes":(context)=>RoutesScreen(),
         "/Register":(context)=>RegisterScreen(),
         "/Login":(context)=>LoginScreen(),
