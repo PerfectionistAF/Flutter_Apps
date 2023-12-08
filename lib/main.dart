@@ -1,3 +1,96 @@
+/* SYNCFUSION MAPS*****
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:syncfusion_flutter_maps/maps.dart';
+
+late MapLatLng _markerPosition;
+late _CustomZoomPanBehavior _mapZoomPanBehavior;
+late MapTileLayerController _controller;
+
+void main() async {
+  runApp(const MyApp());
+}
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Map',
+      home: const HomePage(),
+    );
+  }
+}
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+@override
+void initState() {
+   _controller = MapTileLayerController();
+   _mapZoomPanBehavior = _CustomZoomPanBehavior()
+      ..onTap = updateMarkerChange;
+   super.initState();
+}
+
+void updateMarkerChange(Offset position) {
+  _markerPosition = _controller.pixelToLatLng(position);
+
+  /// Removed [MapTileLayer.initialMarkersCount] property and updated
+  /// markers only when the user taps.
+  if (_controller.markersCount > 0) {
+    _controller.clearMarkers();
+  }
+  _controller.insertMarker(0);
+}
+
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+     body: Center(
+        child: Container(
+          height: 400,
+          width: 400,
+          child: MapTileLayer(
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            zoomPanBehavior: _mapZoomPanBehavior,
+            controller: _controller,
+            markerBuilder: (BuildContext context, int index) {
+              return MapMarker(
+                  latitude: _markerPosition.latitude,
+                  longitude: _markerPosition.longitude,
+                  child: Icon(
+                    Icons.location_on,
+                    color: Colors.red,
+                    size: 20,
+                  ));
+            },
+          ),
+        ),
+      ),
+   );
+}
+}
+class _CustomZoomPanBehavior extends MapZoomPanBehavior {
+  _CustomZoomPanBehavior();
+  late MapTapCallback onTap;
+
+  @override
+  void handleEvent(PointerEvent event) {
+    if (event is PointerUpEvent) {
+      onTap(event.localPosition);
+    }
+    super.handleEvent(event);
+  }
+}
+
+typedef MapTapCallback = void Function(Offset position);*/
+
 //***APPLICATION ASSESSMENT 3:BY HIVE DATABASES_____________________________________________________________________________*/
 /*import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -255,7 +348,7 @@ class _HomePageState extends State<HomePage> {
   }
 }*/
 //***APPLICATION ASSESSMENT 3:BY FORMS_____________________________________________________________________________*/
-import 'package:flutter_application_2/edit_ass3.dart';
+/*import 'package:flutter_application_2/edit_ass3.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/add_ass3.dart';
 
@@ -355,7 +448,7 @@ class _MyBusinessCardsState extends State<MyBusinessCards> {
           }),
     );
   }
-}
+}*/
 
 //***APPLICATION MAIN EIGHT: LAB6:SQFLITE DBS..............................................................***/
 // main.dart
