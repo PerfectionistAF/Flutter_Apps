@@ -1,4 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:path/path.dart';
+import 'package:flutter/material.dart';
+import 'sign_in.dart';
 
 class Auth{
 
@@ -8,6 +11,7 @@ class Auth{
         email: 'sue@hotmail.com',
         password: '123456',
       );
+      
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
