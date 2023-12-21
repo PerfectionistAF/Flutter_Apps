@@ -1,7 +1,6 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 
 //add all the routes to the collection "locations"
 //first start here and select the appropriate route
@@ -97,7 +96,8 @@ const Map<String,dynamic> university = {
 bool acceptedState = false;
 bool offeredState = false;
 bool paidState = false;
-
+int increment = 0;
+DateTime timestamp = DateTime.now();
 //construct 2 global arrays, ToASU and FromASU
 List<Map> toASU = [];//max 10 locations
 List<Map> fromASU =[];
@@ -118,7 +118,7 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
     for(var i =0; i<10; i++){
       //var element = fromASU[i];
       String index = i.toString();
-      String documentId = "fromASU" + index;
+      String documentId = "fromASU$index";
       _fireStore.collection('locations').doc(documentId).set({
                 'pickup': university['location'], 
                 'p_lat': university['latitude'],
@@ -134,7 +134,7 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
                 'paid': paidState
               });
       String index2 = i.toString();
-      String documentId2 = "toASU" + index2;
+      String documentId2 = "toASU$index2";
       _fireStore.collection('locations').doc(documentId2).set({
               'pickup': locations_list[i]['location'], 
               'p_lat': locations_list[i]['latitude'],
@@ -150,12 +150,12 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
               'paid': paidState
               });
     }
-    return const Scaffold();
+    return Scaffold(//);
         //appBar: AppBar(
           //centerTitle: true,
           //title: Text('Refresh Sample '),
         //),
-        /*body: Container(
+        body: Container(
         margin: const EdgeInsets.all(10.0),
         child: StreamBuilder<QuerySnapshot>(
         stream: _fireStore.collection('locations').snapshots(),
@@ -191,6 +191,69 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
                     subtitle: Text(data['destination'].toString()),
                     isThreeLine: true,
                     dense: true,
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(onPressed: () {
+                          //set that ID and document values to driver_rides
+                          //add attribute driver_name
+                          //change offeredState = True
+                          final String documentId;
+                          //offeredState = true;
+                          
+                          if(data['pickup'] == university['location']){
+                            increment++;
+                            String index = increment.toString();
+                            documentId = "fromASU$index";
+                            _fireStore.collection('driver_rides').doc(documentId).set({
+                            //'driver_name'
+                            'driver_name': "Anne",
+                            'pickup': data['pickup'], 
+                            'p_lat': data['p_lat'],
+                            'p_long': data['p_long'],
+                            'destination':data['destination'],
+                            'd_lat':data['d_lat'],
+                            'd_long':data['d_long'],
+                            'stop_lat':data['stop_lat'],
+                            'stop_long':data['stop_long'],
+                            'price':data['price'],
+                            'offered': true,
+                            'accepted': acceptedState,
+                            'paid': paidState,
+                            'time': timestamp,
+                            });
+                          }
+                          else{
+                            increment++;
+                            String index = increment.toString();
+                            documentId = "toASU$index";
+                            _fireStore.collection('driver_rides').doc(documentId).set({
+                            //'driver_name'
+                            'driver_name': "Benny",
+                            'pickup': data['pickup'], 
+                            'p_lat': data['p_lat'],
+                            'p_long': data['p_long'],
+                            'destination':data['destination'],
+                            'd_lat':data['d_lat'],
+                            'd_long':data['d_long'],
+                            'stop_lat':data['stop_lat'],
+                            'stop_long':data['stop_long'],
+                            'price':data['price'],
+                            'offered': true,
+                            'accepted': acceptedState,
+                            'paid': paidState,
+                            'time': timestamp,
+                            });
+                          }
+                          //ERROR
+                          //debugPrint(_fireStore.collection('locations').where(, isEqualTo: True));
+
+                        }, icon: const Icon(Icons.favorite)
+                        ),//turn offered state true
+                        IconButton(onPressed: () {}, icon: const Icon(Icons.paypal)),//turn paid state true in driver_rides
+                        IconButton(onPressed: () {}, icon: const Icon(Icons.check_circle)),//turn accepted state true
+                        ],
+                      ),
                   ),
                 );
               }).toList(),
@@ -199,9 +262,10 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
         },
       ),
     ),
-    );*/
+    );
   }
-}/*Container(
+}
+/*Container(
         margin: const EdgeInsets.all(10.0),
         child: StreamBuilder<QuerySnapshot>(
         stream: _fireStore.collection('locations').snapshots(),

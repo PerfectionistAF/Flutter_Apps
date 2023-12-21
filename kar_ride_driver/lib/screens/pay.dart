@@ -19,7 +19,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         FocusScope.of(context).unfocus();
       },
       child:Scaffold(
-        appBar: AppBar(title: Text("Pay Now", style: 
+        appBar: AppBar(title: const Text("Pay Now", style: 
                 TextStyle(fontFamily: 'Cairo',
                           fontSize: 25,
                           fontWeight: FontWeight.w800,),),
@@ -34,13 +34,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       color: Colors.yellow[900],//yellow.shade100 not called from const type
                       shape:BoxShape.rectangle,
                     ),
-                    child: Text('User Details', style: 
+                    child: const Text('User Details', style: 
                     TextStyle(fontFamily: 'Cairo',
                               fontSize: 20,
                               fontWeight: FontWeight.w800,),),//profile details
                   ),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       size:30,
                       Icons.person,
                     ),
@@ -49,9 +49,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       Navigator.pushReplacementNamed(context, "/Profile");
                     },
                   ),
-                  SizedBox(height: 20,),
+                  const SizedBox(height: 20,),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       Icons.home,
                     ),
                     title: const Text('Home'),//Home//show map from home page///(later)change colour of polyline
@@ -60,7 +60,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     },
                   ),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       Icons.history,
                     ),
                     title: const Text('Ride History'),//Rides History
@@ -71,7 +71,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 ],
               ),
               ),
-          body:Center(
+          body:const Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

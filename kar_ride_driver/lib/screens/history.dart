@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kar_ride_driver/screens/routes.dart';
 import 'package:kar_ride_driver/assistants/assistant_methods.dart';
 import 'package:kar_ride_driver/global/global.dart';
 
@@ -21,7 +20,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         FocusScope.of(context).unfocus();
       },
       child:Scaffold(
-        appBar: AppBar(title: Text("Routes History", style: 
+        appBar: AppBar(title: const Text("Routes History", style: 
                 TextStyle(fontFamily: 'Cairo',
                           fontSize: 25,
                           fontWeight: FontWeight.w800,),),
@@ -36,13 +35,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       color: Colors.yellow[900],//yellow.shade100 not called from const type
                       shape:BoxShape.rectangle,
                     ),
-                    child: Text('User Details', style: 
+                    child: const Text('User Details', style: 
                     TextStyle(fontFamily: 'Cairo',
                               fontSize: 20,
                               fontWeight: FontWeight.w800,),),//profile details
                   ),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       size:30,
                       Icons.person,
                     ),
@@ -51,9 +50,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       Navigator.pushReplacementNamed(context, "/Profile");
                     },
                   ),
-                  SizedBox(height: 20,),
+                  const SizedBox(height: 20,),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       Icons.home,
                     ),
                     title: const Text('Home'),//Home//show map from home page///(later)change colour of polyline
@@ -62,7 +61,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     },
                   ),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       Icons.history,
                     ),
                     title: const Text('Reserve Ride'),//Rides History

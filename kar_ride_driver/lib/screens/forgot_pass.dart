@@ -36,12 +36,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       },
       child:Scaffold(
         body: ListView(
-          padding: EdgeInsets.all(0),
+          padding: const EdgeInsets.all(0),
           children: [
             Column(
               children: [
                 Image.asset(darkTheme ? 'assets/images/citydark.png': 'assets/images/citylight.png'),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Text(
                   'Reset Password',
                   style: TextStyle(
@@ -70,30 +70,30 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
                                 hintText: 'Email',
-                                hintStyle: TextStyle(
+                                hintStyle: const TextStyle(
                                   color: Colors.grey,
                                 ),
                                 filled: true,
                                 fillColor: darkTheme ? Colors.black87 : Colors.grey.shade200,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
-                                  borderSide: BorderSide(
+                                  borderSide: const BorderSide(
                                     width: 0,
                                     style: BorderStyle.none,
                                   ),
                                 ),
-                                prefixIcon: Icon(Icons.email, color: Colors.blueGrey),
+                                prefixIcon: const Icon(Icons.email, color: Colors.blueGrey),
                                 //clear inputs
                                 suffixIcon: emailEditText.text.isEmpty ? Container(width: 0) :  
                                 IconButton(
-                                icon:Icon(Icons.close, color: Colors.blueGrey),
+                                icon:const Icon(Icons.close, color: Colors.blueGrey),
                                 onPressed:(){
                                   emailEditText.clear();
                                 },
                                 )//only show icon when there is email
                               ),
                               autovalidateMode: AutovalidateMode.onUserInteraction,
-                              autofillHints: [AutofillHints.email],//get past emails from system
+                              autofillHints: const [AutofillHints.email],//get past emails from system
                               validator: (text){
                                 if(text == null || text.isEmpty){
                                   return "invalid email: can't be empty";
@@ -118,7 +118,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             ),
                             
                             
-                            SizedBox(height: 20,),
+                            const SizedBox(height: 20,),
                             
                             ///SUBMIT BUTTON
                             ElevatedButton(
@@ -128,7 +128,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(32),
                                 ),
-                                minimumSize: Size(double.infinity, 50)
+                                minimumSize: const Size(double.infinity, 50)
                               ),
                               onPressed: (){
                                 debugPrint(_formKey.toString());
@@ -141,7 +141,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   }
                                 _submit();
                               },
-                              child:Text(
+                              child:const Text(
                                 'Send Reset Password Link',
                                 style: TextStyle(
                                   fontSize: 20,
@@ -150,12 +150,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               ),
                             ),
                             
-                            SizedBox(height: 20,),
+                            const SizedBox(height: 20,),
                             ////HAVE AN ACCOUNT
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
+                                const Text(
                                   "Have an account?",
                                   style: TextStyle(
                                     color: Colors.blueGrey,
@@ -163,10 +163,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   ),
                                 ),
                                 
-                                SizedBox(width: 5,),
+                                const SizedBox(width: 5,),
                                 GestureDetector(
                                   onTap: (){
-                                    Navigator.push(context, MaterialPageRoute(builder: (c)=>LoginScreen()));
+                                    Navigator.push(context, MaterialPageRoute(builder: (c)=>const LoginScreen()));
                                   },
                                   child:Text(
                                     'Login',

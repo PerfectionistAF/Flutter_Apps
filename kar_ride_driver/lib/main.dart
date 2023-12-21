@@ -9,7 +9,6 @@ import 'package:kar_ride_driver/screens/profile.dart';
 import 'package:kar_ride_driver/screens/pay.dart';
 import 'package:kar_ride_driver/screens/forgot_pass.dart';
 import 'package:kar_ride_driver/themes/themes.dart';
-import 'package:kar_ride_driver/splash_screen/splash_screen.dart';
 import 'package:kar_ride_driver/global/locations.dart';
 import 'package:kar_ride_driver/firebase_options.dart';
 
@@ -19,7 +18,7 @@ void main()async {
     //import firebase.options file
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -33,16 +32,16 @@ class MyApp extends StatelessWidget {
       theme:Themes.lightTheme,
       darkTheme: Themes.darkTheme,
       debugShowCheckedModeBanner: false,
-      home: LocationsRefresh(),
+      home: const LocationsRefresh(),
       routes:{
-        "/Home":(context)=>HomeScreen(),
-        "/Profile":(context)=>ProfileScreen(),
-        "/Routes":(context)=>RoutesScreen(),
-        "/History":(context)=>HistoryScreen(),
-        "/Pay":(context)=>PaymentScreen(),
-        "/Register":(context)=>RegisterScreen(),
-        "/Login":(context)=>LoginScreen(),
-        "/ForgotPassword":(context)=>ForgotPasswordScreen(),
+        "/Home":(context)=>const HomeScreen(),
+        "/Profile":(context)=>const ProfileScreen(),
+        "/Routes":(context)=>const RoutesScreen(),
+        "/History":(context)=>const HistoryScreen(),
+        "/Pay":(context)=>const PaymentScreen(),
+        "/Register":(context)=>const RegisterScreen(),
+        "/Login":(context)=>const LoginScreen(),
+        "/ForgotPassword":(context)=>const ForgotPasswordScreen(),
       },
     );
   }

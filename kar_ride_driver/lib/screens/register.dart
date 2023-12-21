@@ -93,7 +93,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             return userRef.child(currentUser!.uid).set(userMap);
           }
           await Fluttertoast.showToast(msg: "Registered Successfully");
-          Navigator.push(context, MaterialPageRoute(builder: (c)=>HomeScreen()));//if successful, go to maps
+          Navigator.push(context, MaterialPageRoute(builder: (c)=>const HomeScreen()));//if successful, go to maps
         }).catchError((errorMessage){
           Fluttertoast.showToast(msg:errorMessage.toString());
         });
@@ -115,12 +115,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       },
       child:Scaffold(
         body: ListView(
-          padding: EdgeInsets.all(0),
+          padding: const EdgeInsets.all(0),
           children: [
             Column(
               children: [
                 Image.asset(darkTheme ? 'assets/images/citydark.png': 'assets/images/citylight.png'),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Text(
                   'Register',
                   style: TextStyle(
@@ -147,28 +147,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ],
                               decoration: InputDecoration(
                                 hintText: 'Name',
-                                hintStyle: TextStyle(
+                                hintStyle: const TextStyle(
                                   color: Colors.grey,
                                 ),
                                 filled: true,
                                 fillColor: darkTheme ? Colors.black87 : Colors.grey.shade200,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
-                                  borderSide: BorderSide(
+                                  borderSide: const BorderSide(
                                     width: 0,
                                     style: BorderStyle.none,
                                   ),
                                 ),
-                                prefixIcon: Icon(Icons.person, color: Colors.blueGrey),
+                                prefixIcon: const Icon(Icons.person, color: Colors.blueGrey),
                                 //clear inputs
                                 suffixIcon: nameEditText.text.isEmpty ? Container(width: 0) :  
                                 IconButton(
-                                icon:Icon(Icons.close, color: Colors.blueGrey),
+                                icon:const Icon(Icons.close, color: Colors.blueGrey),
                                 onPressed:(){
                                   nameEditText.clear();
                                 },)//only show icon when there is text
                               ),
-                              autofillHints: [AutofillHints.name],//get past names from system
+                              autofillHints: const [AutofillHints.name],//get past names from system
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               validator: (text){
                                 if(text == null || text.isEmpty){
@@ -188,7 +188,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               }),
                             ),
                             
-                            SizedBox(height: 10,),
+                            const SizedBox(height: 10,),
                             
                             ///////EMAIL//////
                             TextFormField(
@@ -198,30 +198,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
                                 hintText: 'Email',
-                                hintStyle: TextStyle(
+                                hintStyle: const TextStyle(
                                   color: Colors.grey,
                                 ),
                                 filled: true,
                                 fillColor: darkTheme ? Colors.black87 : Colors.grey.shade200,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
-                                  borderSide: BorderSide(
+                                  borderSide: const BorderSide(
                                     width: 0,
                                     style: BorderStyle.none,
                                   ),
                                 ),
-                                prefixIcon: Icon(Icons.email, color: Colors.blueGrey),
+                                prefixIcon: const Icon(Icons.email, color: Colors.blueGrey),
                                 //clear inputs
                                 suffixIcon: emailEditText.text.isEmpty ? Container(width: 0) :  
                                 IconButton(
-                                icon:Icon(Icons.close, color: Colors.blueGrey),
+                                icon:const Icon(Icons.close, color: Colors.blueGrey),
                                 onPressed:(){
                                   emailEditText.clear();
                                 },
                                 )//only show icon when there is email
                               ),
                               autovalidateMode: AutovalidateMode.onUserInteraction,
-                              autofillHints: [AutofillHints.email],//get past emails from system
+                              autofillHints: const [AutofillHints.email],//get past emails from system
                               validator: (text){
                                 if(text == null || text.isEmpty){
                                   return "invalid email: can't be empty";
@@ -245,26 +245,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               }),
                             ),
                             
-                            SizedBox(height: 10,),
+                            const SizedBox(height: 10,),
 
                             ///////PHONE NUMBER//////
                             IntlPhoneField(
                               keyboardType: TextInputType.number,
                               showCountryFlag: true,
-                              dropdownIcon: Icon(
+                              dropdownIcon: const Icon(
                                 Icons.arrow_drop_down,
                                 color:Colors.blueGrey,
                               ),
                               decoration: InputDecoration(
                                 hintText: 'Phone',
-                                hintStyle: TextStyle(
+                                hintStyle: const TextStyle(
                                   color: Colors.grey,
                                 ),
                                 filled: true,
                                 fillColor: darkTheme ? Colors.black87 : Colors.grey.shade200,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
-                                  borderSide: BorderSide(
+                                  borderSide: const BorderSide(
                                     width: 0,
                                     style: BorderStyle.none,
                                   ),
@@ -276,7 +276,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               }),
                             ),
                             
-                            SizedBox(height: 10,),
+                            const SizedBox(height: 10,),
                             
                             ///////ADDRESS//////
                             TextFormField(
@@ -285,23 +285,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ],
                               decoration: InputDecoration(
                                 hintText: 'Address',
-                                hintStyle: TextStyle(
+                                hintStyle: const TextStyle(
                                   color: Colors.grey,
                                 ),
                                 filled: true,
                                 fillColor: darkTheme ? Colors.black87 : Colors.grey.shade200,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
-                                  borderSide: BorderSide(
+                                  borderSide: const BorderSide(
                                     width: 0,
                                     style: BorderStyle.none,
                                   ),
                                 ),
-                                prefixIcon: Icon(Icons.home, color: Colors.blueGrey),
+                                prefixIcon: const Icon(Icons.home, color: Colors.blueGrey),
                                 //clear inputs
                                 suffixIcon: addressEditText.text.isEmpty ? Container(width: 0) :  
                                 IconButton(
-                                icon:Icon(Icons.close, color: Colors.blueGrey),
+                                icon:const Icon(Icons.close, color: Colors.blueGrey),
                                 onPressed:(){
                                   nameEditText.clear();
                                 },
@@ -325,7 +325,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               }),
                             ),
                             
-                            SizedBox(height: 10,),
+                            const SizedBox(height: 10,),
 
                             ///////PASSWORD//////
                             TextFormField(
@@ -335,19 +335,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ],
                               decoration: InputDecoration(
                                 hintText: 'Password',
-                                hintStyle: TextStyle(
+                                hintStyle: const TextStyle(
                                   color: Colors.grey,
                                 ),
                                 filled: true,
                                 fillColor: darkTheme ? Colors.black87 : Colors.grey.shade200,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
-                                  borderSide: BorderSide(
+                                  borderSide: const BorderSide(
                                     width: 0,
                                     style: BorderStyle.none,
                                   ),
                                 ),
-                                prefixIcon: Icon(Icons.key, color: Colors.blueGrey),
+                                prefixIcon: const Icon(Icons.key, color: Colors.blueGrey),
                                 suffixIcon: IconButton(
                                   icon: Icon(_passwordVisible? Icons.visibility : Icons.visibility_off, 
                                   color: Colors.blueGrey),
@@ -377,7 +377,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               }),
                             ),
                             
-                            SizedBox(height: 10,),
+                            const SizedBox(height: 10,),
 
                             ///////CONFIRM PASSWORD//////
                             TextFormField(
@@ -387,19 +387,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ],
                               decoration: InputDecoration(
                                 hintText: 'Confirm Password',
-                                hintStyle: TextStyle(
+                                hintStyle: const TextStyle(
                                   color: Colors.grey,
                                 ),
                                 filled: true,
                                 fillColor: darkTheme ? Colors.black87 : Colors.grey.shade200,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
-                                  borderSide: BorderSide(
+                                  borderSide: const BorderSide(
                                     width: 0,
                                     style: BorderStyle.none,
                                   ),
                                 ),
-                                prefixIcon: Icon(Icons.lock, color: Colors.blueGrey),
+                                prefixIcon: const Icon(Icons.lock, color: Colors.blueGrey),
                                 suffixIcon: IconButton(
                                   icon: Icon(_confirmPasswordVisible? Icons.visibility : Icons.visibility_off, 
                                   color: Colors.blueGrey),
@@ -432,7 +432,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               }),
                             ),
                             
-                            SizedBox(height: 20,),
+                            const SizedBox(height: 20,),
                             
 
                             ElevatedButton(
@@ -445,7 +445,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(32),
                                 ),
-                                minimumSize: Size(double.infinity, 50)
+                                minimumSize: const Size(double.infinity, 50)
                               ),
                               onPressed: (){
                                 debugPrint(_formKey.toString());
@@ -467,7 +467,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                             ///REGISTER BUTTON
-                            SizedBox(height: 20,),
+                            const SizedBox(height: 20,),
                             GestureDetector(
                               onTap: (){},
                               child: Text(
@@ -478,12 +478,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                             ////FORGOT PASSWORD
-                            SizedBox(height: 20,),
+                            const SizedBox(height: 20,),
                             
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
+                                const Text(
                                   'Have an account?',
                                   style: TextStyle(
                                     color: Colors.blueGrey,
@@ -491,7 +491,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                 ),
                                 ////HAVE AN ACCOUNT////
-                                SizedBox(width: 5,),
+                                const SizedBox(width: 5,),
                                 GestureDetector(
                                   onTap: (){
                                     Navigator.pushReplacementNamed(context, "/Login");

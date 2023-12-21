@@ -28,7 +28,7 @@ class _RoutesScreenState extends State<RoutesScreen> {
         FocusScope.of(context).unfocus();
       },
       child:Scaffold(
-        appBar: AppBar(title: Text("Available Routes", style: 
+        appBar: AppBar(title: const Text("Available Routes", style: 
                 TextStyle(fontFamily: 'Cairo',
                           fontSize: 25,
                           fontWeight: FontWeight.w800,),),
@@ -43,13 +43,13 @@ class _RoutesScreenState extends State<RoutesScreen> {
                       color: Colors.yellow[900],//yellow.shade100 not called from const type
                       shape:BoxShape.rectangle,
                     ),
-                    child: Text('User Details', style: 
+                    child: const Text('User Details', style: 
                     TextStyle(fontFamily: 'Cairo',
                               fontSize: 20,
                               fontWeight: FontWeight.w800,),),//profile details
                   ),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       size:30,
                       Icons.person,
                     ),
@@ -58,9 +58,9 @@ class _RoutesScreenState extends State<RoutesScreen> {
                       Navigator.pushReplacementNamed(context, "/Profile");
                     },
                   ),
-                  SizedBox(height: 20,),
+                  const SizedBox(height: 20,),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       Icons.home,
                     ),
                     title: const Text('Home'),//Home//show map from home page///(later)change colour of polyline
@@ -69,7 +69,7 @@ class _RoutesScreenState extends State<RoutesScreen> {
                     },
                   ),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       Icons.history,
                     ),
                     title: const Text('Ride History'),//Rides History
@@ -89,29 +89,29 @@ class _RoutesScreenState extends State<RoutesScreen> {
                 child: ListTile(
                   title: Row(
                     children: [
-                      Text('From', style: 
+                      const Text('From', style: 
                           TextStyle(fontFamily: 'Cairo',
                           fontSize: 15,
                           fontWeight: FontWeight.w800,),),
                       Text(route[index].place),
-                      Icon(Icons.arrow_forward),
-                      Text('To', style: 
+                      const Icon(Icons.arrow_forward),
+                      const Text('To', style: 
                           TextStyle(fontFamily: 'Cairo',
                           fontSize: 15,
                           fontWeight: FontWeight.w800,),),
                       Text(uni),
                     ],
                   ),
-                  subtitle: Text('Trip at 07:30 AM'),
+                  subtitle: const Text('Trip at 07:30 AM'),
                   trailing: ElevatedButton(
-                    child: Text('Reserve', style: 
+                    child: const Text('Reserve', style: 
                           TextStyle(fontFamily: 'Cairo',
                           fontSize: 15,
                           fontWeight: FontWeight.w800,)),
                     onPressed: (){
                       route[index].state = true; //set state of selected ride
                       setState(() {
-                        Text('Approved', style: 
+                        const Text('Approved', style: 
                           TextStyle(fontFamily: 'Cairo',
                           fontStyle: FontStyle.italic,
                           fontSize: 15,

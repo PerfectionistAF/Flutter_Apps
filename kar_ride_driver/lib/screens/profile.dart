@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kar_ride_driver/global/global.dart';
-import 'package:kar_ride_driver/screens/home.dart';
 import 'package:kar_ride_driver/assistants/assistant_methods.dart';
-import 'package:kar_ride_driver/splash_screen/splash_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -18,7 +16,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(title: Text("My Profile", style: 
+        appBar: AppBar(title: const Text("My Profile", style: 
                 TextStyle(fontFamily: 'Cairo',
                           fontSize: 25,
                           fontWeight: FontWeight.w800,),),
@@ -33,13 +31,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: Colors.yellow[900],//yellow.shade100 not called from const type
                       shape:BoxShape.rectangle,
                     ),
-                    child: Text('User Details', style: 
+                    child: const Text('User Details', style: 
                     TextStyle(fontFamily: 'Cairo',
                               fontSize: 20,
                               fontWeight: FontWeight.w800,),),//profile details
                   ),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       size:30,
                       Icons.person,
                     ),
@@ -48,9 +46,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Navigator.pushReplacementNamed(context, "/Profile");
                     },
                   ),
-                  SizedBox(height: 20,),
+                  const SizedBox(height: 20,),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       Icons.emoji_transportation_rounded,
                     ),
                     title: const Text('Reserve Ride'),//Reserve Ride//from routes page///change colour of polyline
@@ -59,7 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     },
                   ),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       Icons.history,
                     ),
                     title: const Text('Ride History'),//Rides History
@@ -83,21 +81,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: Colors.grey.withOpacity(0.5),
                       spreadRadius: 5,
                       blurRadius: 5,
-                      offset: Offset(0, 3),
+                      offset: const Offset(0, 3),
                     ),
                   ],
                 ),
-                child: CircleAvatar(
+                child: const CircleAvatar(
                   radius: 40,
                   backgroundImage: AssetImage("assets/images/person.png"),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Text(
                 currentUser!.email.toString(),
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ],
           ),

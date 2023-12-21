@@ -20,16 +20,16 @@ Fix firebase assistance
 Fix timer
 */
   startTimer(){  //duration until snapshot is received
-    Timer(Duration(seconds: 5), () async {
+    Timer(const Duration(seconds: 5), () async {
       if(firebaseAuth.currentUser != null){
         //if current user is authenticated as non-null, call read method that creates a user model with all the info
         //else keep it as null
         firebaseAuth.currentUser != null ? AssistantMethods.readCurrentOnlineUserInfo() : null;
         
-        Navigator.push(context, MaterialPageRoute(builder: (c)=>HomeScreen()));//then go to HomeScreen
+        Navigator.push(context, MaterialPageRoute(builder: (c)=>const HomeScreen()));//then go to HomeScreen
       }
       else{
-        Navigator.push(context, MaterialPageRoute(builder: (c)=>LoginScreen()));//then go to LoginScreen
+        Navigator.push(context, MaterialPageRoute(builder: (c)=>const LoginScreen()));//then go to LoginScreen
       }
         
      });

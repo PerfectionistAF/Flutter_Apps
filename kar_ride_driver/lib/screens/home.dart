@@ -3,9 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kar_ride_driver/global/global.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 import 'package:kar_ride_driver/assistants/assistant_methods.dart';
-import 'package:kar_ride_driver/splash_screen/splash_screen.dart';
 import 'dart:math' as math;
-import 'package:random_color/random_color.dart';
 
 //TO DO:
 /*
@@ -25,10 +23,10 @@ FIX NULL EXCEPTIONS WHEN MAP FIRST SHOWS
 //after route is accepeted by user, show it here
 //try first line from new cairo to asu
 List<Model> startLines = [
-  Model(MapLatLng(30.0074, 31.4913), MapLatLng(30.0766, 31.2845)),//to asu
-  Model(MapLatLng(30.0511, 31.3656), MapLatLng(30.0766, 31.2845)),
-  Model(MapLatLng(30.1123, 31.3439), MapLatLng(30.0766, 31.2845)),
-  Model(MapLatLng(30.0131, 31.2089), MapLatLng(30.0766, 31.2845)), 
+  Model(const MapLatLng(30.0074, 31.4913), const MapLatLng(30.0766, 31.2845)),//to asu
+  Model(const MapLatLng(30.0511, 31.3656), const MapLatLng(30.0766, 31.2845)),
+  Model(const MapLatLng(30.1123, 31.3439), const MapLatLng(30.0766, 31.2845)),
+  Model(const MapLatLng(30.0131, 31.2089), const MapLatLng(30.0766, 31.2845)), 
   ];
 
 class HomeScreen extends StatefulWidget {
@@ -40,7 +38,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   
-  GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
   double searchLocationContainerHeight = 220;
   double waitingResponseForDriverContainerHeight = 0;
   double assignedDriverInfoContainerHeight = 0;
@@ -64,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
             FocusScope.of(context).unfocus();
           },
           child:Scaffold(//check directionality:::prioritise layout, stack layout or recycler layout
-              appBar: AppBar(title: Text("My Home", style: 
+              appBar: AppBar(title: const Text("My Home", style: 
                 TextStyle(fontFamily: 'Cairo',
                           fontSize: 25,
                           fontWeight: FontWeight.w800,),),
@@ -79,13 +77,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Colors.yellow[900],//yellow.shade100 not called from const type
                       shape:BoxShape.rectangle,
                     ),
-                    child: Text('User Details', style: 
+                    child: const Text('User Details', style: 
                     TextStyle(fontFamily: 'Cairo',
                               fontSize: 20,
                               fontWeight: FontWeight.w800,),),//profile details
                   ),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       size:30,
                       Icons.person,
                     ),
@@ -94,9 +92,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.pushReplacementNamed(context, "/Profile");
                     },
                   ),
-                  SizedBox(height: 20,),
+                  const SizedBox(height: 20,),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       Icons.emoji_transportation_rounded,
                     ),
                     title: const Text('Reserve Ride'),//Reserve Ride//from routes page///change colour of polyline
@@ -105,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       Icons.history,
                     ),
                     title: const Text('Ride History'),//Rides History
@@ -122,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   layers: [
                     MapTileLayer(
                       urlTemplate:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      initialFocalLatLng: MapLatLng(30.0766, 31.2845),
+                      initialFocalLatLng: const MapLatLng(30.0766, 31.2845),
                       initialZoomLevel: 8,
                       markerBuilder: (BuildContext context, int index) {
                       
@@ -130,9 +128,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         latitude: startLines[index].from.latitude,
                         longitude: startLines[index].from.longitude,
                         iconType: MapIconType.circle,
-                        size: Size(10, 10),
+                        size: const Size(10, 10),
                         alignment: Alignment.center,
-                        offset: Offset(0, 9),
+                        offset: const Offset(0, 9),
                         iconColor: Colors.red[600],
                         iconStrokeColor: Colors.red[900],
                         iconStrokeWidth: 2,
