@@ -26,4 +26,4 @@ A new carpooling app in Flutter.
 
 - main.dart: the navigation and the interaction between the pages 
 
-<img src='assets/images/logo.png' height = '350'  width='250'>
+<img src='kar_ride_driver/assets/images/logo.png' height = '350'  width='250'>
