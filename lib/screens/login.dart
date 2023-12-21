@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:email_validator/email_validator.dart';
@@ -55,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
   
   void onListen() => setState(() {/*update UI*/});
-
+  
   void _submit() async {//to register to real time db
     if(_formKey.currentState!.validate()){//fixing null check to target error
       await firebaseAuth.signInWithEmailAndPassword(
