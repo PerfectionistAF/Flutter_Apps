@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       theme:Themes.lightTheme,
       darkTheme: Themes.darkTheme,
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: RoutesScreen(),//SplashScreen(),
       routes:{
         "/Home":(context)=>HomeScreen(),
         "/Profile":(context)=>ProfileScreen(),

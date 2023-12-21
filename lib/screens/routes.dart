@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kar_ride/assistants/assistant_methods.dart';
 import 'package:kar_ride/global/global.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-List<Route> route = [
-  Route('New Cairo', false),
-  Route('Nasr City', false),
-  Route('Heliopolis', false),
-  Route('Giza', false),
-  ];
-String uni = 'Ain Shams University';
-
+////retrieve the offerred rides by drivers
+////either accept or not///bypass time constraint by using only offerred
+//////either rider accepts if offerred or if rider doesn't accept, driver accepts
 
 class RoutesScreen extends StatefulWidget {
   const RoutesScreen({super.key});
@@ -19,9 +15,10 @@ class RoutesScreen extends StatefulWidget {
 }
 
 class _RoutesScreenState extends State<RoutesScreen> {
+  final _fireStore = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
-    bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    //bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
     AssistantMethods.readCurrentOnlineUserInfo();
     return GestureDetector(
       onTap:(){
@@ -33,7 +30,7 @@ class _RoutesScreenState extends State<RoutesScreen> {
                           fontSize: 25,
                           fontWeight: FontWeight.w800,),),
                           backgroundColor:Colors.yellow.shade900),
-        drawer: Drawer(
+        /*drawer: Drawer(
               child: ListView(
                 // Important: Remove any padding from the ListView.
                 padding: EdgeInsets.zero,
@@ -79,8 +76,54 @@ class _RoutesScreenState extends State<RoutesScreen> {
                   ),
                 ],
               ),
-              ),
-        body: ListView.builder(
+              ),*/
+        body:  Container(
+        margin: const EdgeInsets.all(10.0),
+        child: StreamBuilder<QuerySnapshot>(
+        stream: _fireStore.collection('driver_rides').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Text('No offered rides at the moment');
+          } else {
+            return ListView(
+              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+                return Container(
+                  height: 50,
+                  margin: const EdgeInsets.only(bottom: 15.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                        color:  Colors.blueGrey,
+                        blurRadius: 5.0,
+                        offset: Offset(0, 5), // shadow direction: bottom right
+                      ),
+                    ],
+                  ),
+                  child: ListTile(
+                    leading: Container(
+                      width: 20,
+                      height: 20,
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      alignment: Alignment.center,
+                    ),
+                    title: Text(data['pickup'].toString()),
+                    subtitle: Text(data['driver_name'].toString()),
+                    isThreeLine: true,
+                    dense: true,
+                  ),
+                );
+          }).toList(),
+          );
+        }
+        }
+        ),
+
+        ),
+        
+        /*ListView.builder(
           itemCount: route.length,
           itemBuilder: (context, index) {
             return Padding(
@@ -130,11 +173,12 @@ class _RoutesScreenState extends State<RoutesScreen> {
                 ),
               ),
             );
-          }),
-      ),
-    );
+          }),*/
+                ),
+      );
   }
 }
+
 class Route {
   Route(this.place, this.state);
 
