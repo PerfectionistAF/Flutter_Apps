@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
+import 'package:kar_ride_driver/screens/route_details.dart';
 
 //add all the routes to the collection "locations"
 //first start here and select the appropriate route
@@ -97,7 +98,13 @@ bool acceptedState = false;
 bool offeredState = false;
 bool paidState = false;
 int increment = 0;
-DateTime timestamp = DateTime.now();
+final timestamp = DateTime.now();
+var format = DateFormat("HH:mm");
+
+var morningRide = format.parse("07:30"); // 07:30am
+var duskRide = format.parse("17:30"); // 05:30pm
+Color iconColor = Colors.blueGrey;
+var isPressed = false;
 //construct 2 global arrays, ToASU and FromASU
 List<Map> toASU = [];//max 10 locations
 List<Map> fromASU =[];
@@ -166,6 +173,13 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
             return ListView(
               children: snapshot.data!.docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+                Color iconColor = Colors.blueGrey;
+                if(data['accepted']){
+                  iconColor = Colors.green;
+                }
+                else{
+                  iconColor = Colors.red;
+                }
                 return Container(
                   height: 50,
                   margin: const EdgeInsets.only(bottom: 15.0),
@@ -186,6 +200,9 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
                       height: 20,
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       alignment: Alignment.center,
+                      child: CircleAvatar(
+                        backgroundColor: iconColor,
+                      ),
                     ),
                     title: Text(data['pickup'].toString()),
                     subtitle: Text(data['destination'].toString()),
@@ -203,10 +220,15 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
                           
                           if(data['pickup'] == university['location']){
                             increment++;
+                            final timestamp = DateTime.now();
+                            //var now = format.parse(timestamp);
+                            //var now2 = now.hour;
+                            //index for document Id
                             String index = increment.toString();
                             documentId = "fromASU$index";
                             _fireStore.collection('driver_rides').doc(documentId).set({
                             //'driver_name'
+                            'id' : documentId,
                             'driver_name': "Anne",
                             'pickup': data['pickup'], 
                             'p_lat': data['p_lat'],
@@ -220,15 +242,32 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
                             'offered': true,
                             'accepted': acceptedState,
                             'paid': paidState,
-                            'time': timestamp,
+                            'time_offered': timestamp,
                             });
+                            //from ASU data['time_offered].add(const Duration(hours: 12));
+                            if((duskRide.hour - timestamp.hour) >= 12){
+                              //issue accepted color
+                              //iconColor = Colors.green;
+                              acceptedState = true;
+                              _fireStore.collection('driver_rides').doc(documentId).update({
+                                'accepted':true,});
+                                //isPressed = true;
+                            }
+                            //else{
+                              //iconColor = Colors.red;
+                            //}
                           }
                           else{
                             increment++;
+                            final timestamp = DateTime.now();
+                            //var now = format.parse(timestamp);
+                            //var now2 = now.hour;
+                            //index for document Id
                             String index = increment.toString();
                             documentId = "toASU$index";
                             _fireStore.collection('driver_rides').doc(documentId).set({
                             //'driver_name'
+                            'id' : documentId,
                             'driver_name': "Benny",
                             'pickup': data['pickup'], 
                             'p_lat': data['p_lat'],
@@ -242,8 +281,20 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
                             'offered': true,
                             'accepted': acceptedState,
                             'paid': paidState,
-                            'time': timestamp,
+                            'time_offered': timestamp,
                             });
+                            //to ASU 
+                            if((morningRide.hour - timestamp.hour) >= 12){
+                              //issue accepted color
+                              //iconColor = Colors.green;
+                              acceptedState = true;
+                              _fireStore.collection('driver_rides').doc(documentId).update({
+                                'accepted':true,});
+                                //isPressed = true;
+                            }
+                            //else{
+                              //iconColor = Colors.red;
+                            //}
                           }
                           //ERROR
                           //debugPrint(_fireStore.collection('locations').where(, isEqualTo: True));
@@ -251,9 +302,34 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
                         }, icon: const Icon(Icons.favorite)
                         ),//turn offered state true
                         IconButton(onPressed: () {}, icon: const Icon(Icons.paypal)),//turn paid state true in driver_rides
-                        IconButton(onPressed: () {}, icon: const Icon(Icons.check_circle)),//turn accepted state true
+                        /*IconButton( 
+                        icon:Icon(
+                          Icons.check_circle,
+                          color: (isPressed)? Colors.green : Colors.red,
+                          ),
+                          onPressed:(){
+                            setState(() {
+                              isPressed = isPressed;
+                            });
+                          }
+                          ),*/
+                        
+                          //),//turn accepted state true
                         ],
                       ),
+                      onTap: (){
+                        debugPrint(data['id']);
+                        Navigator.push(context, 
+                        MaterialPageRoute(
+                          builder: (context)=> const RouteDetailsScreen(),
+                          settings: RouteSettings(arguments: data['id']),
+                          ),
+                          );
+                        //String idDetails = getDocument(data['id'], context);
+                        //function that takes all the values needed for the route details
+                        //HERE: THE DRIVER SIDE
+                        
+                      },
                   ),
                 );
               }).toList(),
@@ -265,50 +341,8 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
     );
   }
 }
-/*Container(
-        margin: const EdgeInsets.all(10.0),
-        child: StreamBuilder<QuerySnapshot>(
-        stream: _fireStore.collection('locations').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Text('No locations to display');
-          } else {
-            return ListView(
-              children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-                return Container(
-                  height: 300,
-                  margin: const EdgeInsets.only(bottom: 15.0),
-                  child: Text(
-                    data.values.toString()
-                    ),
-                );
-              }).toList()//,map.values.toList()[index]["pic"]
-            );
 
-            //return locations.forEach((index, value) {});
-            //return Row(children: [for (var cat in _fireStore.collection('locations').doc('TEST')) Text(cat.toString()) ]);
-          }
-        },
-      ),
-    ),
-    );
-  }
-}*/
-
-//final db = FirebaseFirestore.instance;//initialise firestore
-//CollectionReference locs = FirebaseFirestore.instance.collection('locations');
-/*
-Future<void> _addFromASU() {
-      //add a location at a time
-locations.add({
-            'pickup': university['location'], 
-            'p_lat': university['latitude'],
-            'p_long': university['longitude'],
-            'destination':locations_list[0]['location'],
-            'd_lat':locations_list[0]['latitude'],
-          })
-          .then((value) => debugPrint("Data Added"))
-          .catchError((error) => debugPrint("Data couldn't be added."));
+String getDocument(String documentId, context){
+  Navigator.pushReplacementNamed(context, "/Routes");
+  return documentId;
 }
-*/
