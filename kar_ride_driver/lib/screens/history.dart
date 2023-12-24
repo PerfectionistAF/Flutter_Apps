@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kar_ride_driver/assistants/assistant_methods.dart';
 import 'package:kar_ride_driver/global/global.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:kar_ride_driver/screens/routes.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -10,10 +12,16 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-    
+  final _fireStore = FirebaseFirestore.instance;
+  var isPressed = false;
+  bool acceptedState = false;
+  bool offeredState = false;
+  bool paidState = false;
+  int increment = 0;
+  
   @override
   Widget build(BuildContext context) {
-   bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
+   //bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
     AssistantMethods.readCurrentOnlineUserInfo();
     return GestureDetector(
       onTap:(){
@@ -24,7 +32,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 TextStyle(fontFamily: 'Cairo',
                           fontSize: 25,
                           fontWeight: FontWeight.w800,),),
-                          backgroundColor:Colors.yellow.shade900),
+                          backgroundColor:Colors.deepPurpleAccent.shade400),
         drawer: Drawer(
               child: ListView(
                 // Important: Remove any padding from the ListView.
@@ -32,7 +40,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 children: [
                   DrawerHeader(
                     decoration: BoxDecoration(
-                      color: Colors.yellow[900],//yellow.shade100 not called from const type
+                      color:Colors.deepPurpleAccent.shade400,//yellow.shade100 not called from const type
                       shape:BoxShape.rectangle,
                     ),
                     child: const Text('User Details', style: 
@@ -62,9 +70,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   ),
                   ListTile(
                     leading: const Icon(
-                      Icons.history,
+                      Icons.emoji_transportation_rounded,
                     ),
-                    title: const Text('Reserve Ride'),//Rides History
+                    title: const Text('My Routes'),//Rides History
                     onTap: () {
                       Navigator.pushReplacementNamed(context, "/Routes");//ride history
                     },
@@ -72,6 +80,68 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 ],
               ),
               ),
+       body:Container(
+        margin: const EdgeInsets.all(10.0),
+        child: StreamBuilder<QuerySnapshot>(
+        stream: _fireStore.collection('driver_rides').where('paid', isEqualTo: true).snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Text('No historical paid rides');
+          } else {
+            return ListView(
+              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+                
+                return Container(
+                  height: 50,
+                  margin: const EdgeInsets.only(bottom: 15.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                        color:  Colors.blueGrey,
+                        blurRadius: 5.0,
+                        offset: Offset(0, 5), // shadow direction: bottom right
+                      ),
+                    ],
+                  ),
+                  child: ListTile(
+                    leading: Container(
+                      width: 20,
+                      height: 20,
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      alignment: Alignment.center,
+                    ),
+                   title: Row(
+                    children: [
+                      const Text('From ', style: 
+                          TextStyle(fontFamily: 'Cairo',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color:Colors.indigo),),
+                      Text(data['pickup'].toString()),
+                      const Icon(Icons.arrow_forward),
+                      const Text(' To ', style: 
+                          TextStyle(fontFamily: 'Cairo',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.indigo),),
+                      Text(data['destination'].toString()),
+                    ],
+                  ),
+                  subtitle: (data['pickup'].toString().contains("ASU"))? 
+                  Text("${duskRide.hour}:${duskRide.minute}") : Text("${morningRide.hour}:${morningRide.minute}"),
+                    isThreeLine: true,
+                    dense: true,
+                  ),
+                );
+              }).toList(),
+            );
+          }
+        },
+      ),
+    ),
       ),
     );
   }

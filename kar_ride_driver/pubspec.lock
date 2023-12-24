@@ -564,10 +564,10 @@ packages:
     dependency: "direct main"
     description:
       name: intl
-      sha256: "3bc132a9dbce73a7e4a21a17d06e1878839ffbf975568bc875c60537824b0c4d"
+      sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.18.1"
+    version: "0.19.0"
   intl_phone_field:
     dependency: "direct main"
     description:
@@ -873,18 +873,18 @@ packages:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
-      sha256: a2427697bfad5b611db78ea4c4daef82d3350b83c729a8dc37959662a31547f9
+      sha256: "69c827931957d5b121ee9f0b9b0b8d7d0d1ac537b61bcdd5c3fbffc044bbe86e"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "23.2.7"
+    version: "24.1.41"
   syncfusion_flutter_maps:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_maps
-      sha256: "2a074bf7da45a58e4bd731500388ff1309bdbde33d5b2354308c36beef5f531d"
+      sha256: "680e88479913bf3e1e22e85969c65aa4e9d007535c9d369a877b56cbbe34746a"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "23.2.7"
+    version: "24.1.41"
   term_glyph:
     dependency: transitive
     description:

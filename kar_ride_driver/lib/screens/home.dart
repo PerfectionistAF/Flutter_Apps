@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:kar_ride_driver/global/global.dart';
-import 'package:syncfusion_flutter_maps/maps.dart';
-import 'package:kar_ride_driver/assistants/assistant_methods.dart';
+import 'package:kar_ride_driver/screens/pay.dart';
 import 'dart:math' as math;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:kar_ride_driver/global/global.dart';
+import 'package:intl/intl.dart';
 
 //TO DO:
 /*
@@ -19,22 +20,32 @@ AMMEND MAPS
 FIX NULL EXCEPTIONS WHEN MAP FIRST SHOWS
 */
 
+///filtered routes
+///HAS A PAY BUTTON, IF PRESSED GOES TO PAY PAGE, PASS THE PRICE TO THE PAY PAGE
+///IF DRIVER MARKS AS PAID, MARK DRIVER_RIDES AS PAID
 
 //after route is accepeted by user, show it here
 //try first line from new cairo to asu
-List<Model> startLines = [
+/*List<Model> startLines = [
   Model(const MapLatLng(30.0074, 31.4913), const MapLatLng(30.0766, 31.2845)),//to asu
   Model(const MapLatLng(30.0511, 31.3656), const MapLatLng(30.0766, 31.2845)),
   Model(const MapLatLng(30.1123, 31.3439), const MapLatLng(30.0766, 31.2845)),
   Model(const MapLatLng(30.0131, 31.2089), const MapLatLng(30.0766, 31.2845)), 
   ];
-
+*/
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
+final timestamp = DateTime.now();
+var format = DateFormat("HH:mm");
+DateTime now = DateTime.now();
+DateTime date = DateTime(now.year, now.month, now.day, now.hour, now.minute);
+
+var morningRide = format.parse("07:30"); // 07:30am
+var duskRide = format.parse("17:30"); // 05:30pm
 
 class _HomeScreenState extends State<HomeScreen> {
   
@@ -49,14 +60,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final rnd = math.Random();
   Color getRandomColor() => Color(rnd.nextInt(0xffffffff));
+  
+  final _fireStore = FirebaseFirestore.instance;
+  var isPressed = false;
+  bool acceptedState = false;
+  bool offeredState = false;
+  bool paidState = false;
+  int increment = 0;
 
   @override
   Widget build(BuildContext context) {
-    bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    /*bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
     AssistantMethods.readCurrentOnlineUserInfo();
     debugPrint("This profile belongs to:\n");
     debugPrint(currentUser!.email.toString());
-
+*/
     return GestureDetector(
           onTap: (){
             FocusScope.of(context).unfocus();
@@ -66,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 TextStyle(fontFamily: 'Cairo',
                           fontSize: 25,
                           fontWeight: FontWeight.w800,),),
-                          backgroundColor:Colors.yellow.shade900),
+                          backgroundColor:Colors.deepPurpleAccent.shade400),
               drawer: Drawer(
               child: ListView(
                 // Important: Remove any padding from the ListView.
@@ -74,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   DrawerHeader(
                     decoration: BoxDecoration(
-                      color: Colors.yellow[900],//yellow.shade100 not called from const type
+                      color: Colors.deepPurpleAccent.shade400,
                       shape:BoxShape.rectangle,
                     ),
                     child: const Text('User Details', style: 
@@ -97,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     leading: const Icon(
                       Icons.emoji_transportation_rounded,
                     ),
-                    title: const Text('Reserve Ride'),//Reserve Ride//from routes page///change colour of polyline
+                    title: const Text('My Routes'),//Reserve Ride//from routes page///change colour of polyline
                     onTap: () {
                       Navigator.pushReplacementNamed(context, "/Routes");
                     },
@@ -111,10 +129,125 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.pushReplacementNamed(context, "/History");//ride history
                     },
                   ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.history,
+                    ),
+                    title: const Text('All Locations'),//All Locations
+                    onTap: () {
+                      Navigator.pushReplacementNamed(context, "/AllLocations");
+                    },
+                  ),
                 ],
               ),
               ),
-            body:Stack(
+        body:Container(
+        margin: const EdgeInsets.all(10.0),
+        child: StreamBuilder<QuerySnapshot>(
+        stream: _fireStore.collection('user_rides').where('accepted', isEqualTo: true).snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Text('No accepted rides at the moment');
+          } else {
+            return ListView(
+              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+                
+                return Container(
+                  height: 50,
+                  margin: const EdgeInsets.only(bottom: 15.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                        color:  Colors.blueGrey,
+                        blurRadius: 5.0,
+                        offset: Offset(0, 5), // shadow direction: bottom right
+                      ),
+                    ],
+                  ),
+                  child: ListTile(
+                    leading: Container(
+                      width: 20,
+                      height: 20,
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      alignment: Alignment.center,
+                    ),
+                   title: Row(
+                    children: [
+                      const Text('From ', style: 
+                          TextStyle(fontFamily: 'Cairo',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.indigo),),
+                      Text(data['pickup'].toString()),
+                      const Icon(Icons.arrow_forward),
+                      const Text(' To ', style: 
+                          TextStyle(fontFamily: 'Cairo',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.indigo),),
+                      Text(data['destination'].toString()),
+                    ],
+                  ),
+                  subtitle: (data['pickup'].toString().contains("ASU"))? 
+                  Text("${duskRide.hour}:${duskRide.minute}") : Text("${morningRide.hour}:${morningRide.minute}"),
+                    isThreeLine: true,
+                    dense: true,
+                    trailing: 
+                      //mainAxisSize: MainAxisSize.min,
+                      //PAYING
+                        IconButton(
+                          icon: Icon(
+                          Icons.monetization_on_rounded,
+                          color: isPressed?Colors.deepPurpleAccent:Colors.black),
+
+                          onPressed: () {
+                            final String documentId;
+                            isPressed = true;
+                            if(data['paid'] == false){
+                              //set new id after payment
+                              if(data['pickup'].toString().contains("ASU")){
+                                increment++;
+                                String index = increment.toString();
+                                documentId = "fromASU$index";
+                              }
+                              else{
+                                increment++;
+                                String index = increment.toString();
+                                documentId = "fromASU$index";
+                              }
+                              _fireStore.collection('driver_rides').doc(documentId).update({
+                                  'paid':true,});
+                            }
+                            }
+                        ),
+                         onTap: (){
+                        debugPrint(data['id']);
+                        Navigator.push(context, 
+                        MaterialPageRoute(
+                          builder: (context)=> const PaymentScreen(),
+                          settings: RouteSettings(arguments: data['price'].toString()),
+                          ),//send to payment page
+                          );
+                        //String idDetails = getDocument(data['id'], context);
+                        //function that takes all the values needed for the route details
+                        //HERE: THE DRIVER SIDE
+                        
+                      },
+                  ),
+                );
+              }).toList(),
+            );
+          }
+        },
+      ),
+    ),
+    ),
+    );
+  }
+            /*Stack(
               children: [
                 SfMaps(
                   layers: [
@@ -164,15 +297,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                   ),
               ],
-            ), 
-          ),
+            ),*/ 
+          /*),
         );
-  }
+  }*/
 }
 
-class Model {
+/*class Model {
   Model(this.from, this.to);
 
   MapLatLng from;
   MapLatLng to;
-}
+}*/

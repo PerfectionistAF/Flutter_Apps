@@ -45,16 +45,16 @@ Fix timer
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.yellow.shade900,
+      backgroundColor: Colors.deepPurpleAccent.shade400,
       body: Center(
-        child: Text(
+        child: Text( 
           'KarRide',
           style:TextStyle(
             fontFamily: 'Cairo',
             fontSize: 40,
             fontWeight: FontWeight.w800,
             fontStyle: FontStyle.italic,
-            color: Colors.grey[900],
+            color: Colors.grey[200],
           ),
         ),
       ),

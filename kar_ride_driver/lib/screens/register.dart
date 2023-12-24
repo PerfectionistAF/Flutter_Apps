@@ -8,18 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:kar_ride_driver/global/global.dart';
 import 'package:kar_ride_driver/screens/home.dart';
-//TO DO:
-/*
-FIXED:
-Validate inputs
-Initialise country code
-Save inputs to firebase---_submit function
-Handle buttons
-Check nulls and text is handled well
 
-
-FIX DARK THEME
-*/
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -89,7 +78,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               "address":addressEditText.text.trim()
             };//user map 
             //add it to your db
-            DatabaseReference userRef = FirebaseDatabase.instance.ref().child("users");
+            DatabaseReference userRef = FirebaseDatabase.instance.ref().child("drivers");
             return userRef.child(currentUser!.uid).set(userMap);
           }
           await Fluttertoast.showToast(msg: "Registered Successfully");
@@ -106,7 +95,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   
   @override
   Widget build(BuildContext context) {
-    bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
     
     return GestureDetector(
       //key: _formKey, ERROR ONLY ONE WIDGET SHOULD USE THIS    
@@ -119,12 +107,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           children: [
             Column(
               children: [
-                Image.asset(darkTheme ? 'assets/images/citydark.png': 'assets/images/citylight.png'),
+                Image.asset('assets/images/citydark.png'),
                 const SizedBox(height: 20),
                 Text(
                   'Register',
                   style: TextStyle(
-                    color: darkTheme ? Colors.deepPurpleAccent.shade400 : Colors.yellow.shade900,
+                    color: Colors.deepPurpleAccent.shade400,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
@@ -151,7 +139,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   color: Colors.grey,
                                 ),
                                 filled: true,
-                                fillColor: darkTheme ? Colors.black87 : Colors.grey.shade200,
+                                fillColor: Colors.grey.shade200,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
                                   borderSide: const BorderSide(
@@ -202,7 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   color: Colors.grey,
                                 ),
                                 filled: true,
-                                fillColor: darkTheme ? Colors.black87 : Colors.grey.shade200,
+                                fillColor: Colors.grey.shade200,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
                                   borderSide: const BorderSide(
@@ -261,7 +249,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   color: Colors.grey,
                                 ),
                                 filled: true,
-                                fillColor: darkTheme ? Colors.black87 : Colors.grey.shade200,
+                                fillColor:Colors.grey.shade200,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
                                   borderSide: const BorderSide(
@@ -289,7 +277,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   color: Colors.grey,
                                 ),
                                 filled: true,
-                                fillColor: darkTheme ? Colors.black87 : Colors.grey.shade200,
+                                fillColor:Colors.grey.shade200,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
                                   borderSide: const BorderSide(
@@ -339,7 +327,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   color: Colors.grey,
                                 ),
                                 filled: true,
-                                fillColor: darkTheme ? Colors.black87 : Colors.grey.shade200,
+                                fillColor: Colors.grey.shade200,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
                                   borderSide: const BorderSide(
@@ -391,7 +379,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   color: Colors.grey,
                                 ),
                                 filled: true,
-                                fillColor: darkTheme ? Colors.black87 : Colors.grey.shade200,
+                                fillColor: Colors.grey.shade200,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
                                   borderSide: const BorderSide(
@@ -438,9 +426,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 //primary
-                                backgroundColor:darkTheme? Colors.deepPurple.shade300 : Colors.yellow.shade900,
+                                backgroundColor:Colors.deepPurple.shade300,
                                 //onPrimary
-                                foregroundColor: darkTheme? Colors.black : Colors.white,
+                                foregroundColor:Colors.white,
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(32),
@@ -468,15 +456,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             ///REGISTER BUTTON
                             const SizedBox(height: 20,),
-                            GestureDetector(
+                            /*GestureDetector(
                               onTap: (){},
                               child: Text(
                                 'Forgot Password',
                                 style: TextStyle(
-                                  color: darkTheme? Colors.indigo.shade500 : Colors.yellow.shade900,
+                                  color: Colors.indigo.shade500,
                                 ),
                               ),
-                            ),
+                            ),*/
                             ////FORGOT PASSWORD
                             const SizedBox(height: 20,),
                             
@@ -500,7 +488,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     'Log In',
                                     style: TextStyle(
                                       fontSize: 15,
-                                      color: darkTheme? Colors.indigo.shade500 : Colors.yellow.shade900,
+                                      color: Colors.indigo.shade500,
                                     ),
                                   ),
                                 ),

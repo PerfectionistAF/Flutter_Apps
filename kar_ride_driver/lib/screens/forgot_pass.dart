@@ -29,7 +29,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
     return GestureDetector(
       onTap:(){
         FocusScope.of(context).unfocus();
@@ -40,12 +39,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           children: [
             Column(
               children: [
-                Image.asset(darkTheme ? 'assets/images/citydark.png': 'assets/images/citylight.png'),
+                Image.asset('assets/images/citydark.png'),
                 const SizedBox(height: 20),
                 Text(
                   'Reset Password',
                   style: TextStyle(
-                    color: darkTheme ? Colors.deepPurpleAccent.shade400 : Colors.amber.shade900,
+                    color: Colors.deepPurpleAccent.shade400 ,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
@@ -74,7 +73,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   color: Colors.grey,
                                 ),
                                 filled: true,
-                                fillColor: darkTheme ? Colors.black87 : Colors.grey.shade200,
+                                fillColor: Colors.grey.shade200,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
                                   borderSide: const BorderSide(
@@ -123,7 +122,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             ///SUBMIT BUTTON
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: darkTheme? Colors.black : Colors.white, backgroundColor: darkTheme? Colors.deepPurple.shade300 : Colors.amber.shade900,
+                                foregroundColor:Colors.white, 
+                                backgroundColor:Colors.deepPurple.shade300,
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(32),
@@ -172,7 +172,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     'Login',
                                     style: TextStyle(
                                       fontSize: 15,
-                                      color: darkTheme? Colors.indigo.shade500 : Colors.yellow.shade900,
+                                      color:Colors.indigo.shade500,
                                     ),
                                   ),
                                 ),

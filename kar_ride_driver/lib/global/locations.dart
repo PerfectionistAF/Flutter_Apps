@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kar_ride_driver/screens/route_details.dart';
+import 'package:kar_ride_driver/global/global.dart';
 
 //add all the routes to the collection "locations"
 //first start here and select the appropriate route
@@ -100,14 +101,12 @@ bool paidState = false;
 int increment = 0;
 final timestamp = DateTime.now();
 var format = DateFormat("HH:mm");
+DateTime now = DateTime.now();
+DateTime date = DateTime(now.year, now.month, now.day, now.hour, now.minute);
 
 var morningRide = format.parse("07:30"); // 07:30am
 var duskRide = format.parse("17:30"); // 05:30pm
-Color iconColor = Colors.blueGrey;
-var isPressed = false;
-//construct 2 global arrays, ToASU and FromASU
-List<Map> toASU = [];//max 10 locations
-List<Map> fromASU =[];
+
 //back to routes page where all of the arrays are printed as lists
 
 class LocationsRefresh extends StatefulWidget {
@@ -123,7 +122,6 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
   @override
   Widget build(BuildContext context) {
     for(var i =0; i<10; i++){
-      //var element = fromASU[i];
       String index = i.toString();
       String documentId = "fromASU$index";
       _fireStore.collection('locations').doc(documentId).set({
@@ -157,29 +155,80 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
               'paid': paidState
               });
     }
-    return Scaffold(//);
-        //appBar: AppBar(
-          //centerTitle: true,
-          //title: Text('Refresh Sample '),
-        //),
+    return Scaffold(
+      appBar: AppBar(title: const Text("Available Locations", style: 
+                TextStyle(fontFamily: 'Cairo',
+                          fontSize: 25,
+                          fontWeight: FontWeight.w800,),),
+                          backgroundColor:Colors.deepPurpleAccent.shade400),
+        drawer: Drawer(
+              child: ListView(
+                // Important: Remove any padding from the ListView.
+                padding: EdgeInsets.zero,
+                children: [
+                  DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Colors.deepPurpleAccent.shade400,
+                      shape:BoxShape.rectangle,
+                    ),
+                    child: const Text('User Details', style: 
+                    TextStyle(fontFamily: 'Cairo',
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,),),//profile details
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      size:30,
+                      Icons.person,
+                    ),
+                    title: Text(currentUser!.email.toString()),
+                    onTap: () {
+                      Navigator.pushReplacementNamed(context, "/Profile");
+                    },
+                  ),
+                  const SizedBox(height: 20,),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.home,
+                    ),
+                    title: const Text('Home'),//Home//show map from home page///(later)change colour of polyline
+                    onTap: () {
+                      Navigator.pushReplacementNamed(context, "/Home");
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.history,
+                    ),
+                    title: const Text('Ride History'),//Rides History
+                    onTap: () {
+                      Navigator.pushReplacementNamed(context, "/History");//ride history
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.place,
+                    ),
+                    title: const Text('My Routes'),
+                    onTap: () {
+                      Navigator.pushReplacementNamed(context, "/Routes");
+                    },
+                  ),
+                ],
+              ),
+              ),
         body: Container(
         margin: const EdgeInsets.all(10.0),
         child: StreamBuilder<QuerySnapshot>(
         stream: _fireStore.collection('locations').snapshots(),
         builder: (context, snapshot) {
+          var isPressed = false;
           if (!snapshot.hasData) {
             return const Text('No locations to display');
           } else {
             return ListView(
               children: snapshot.data!.docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-                Color iconColor = Colors.blueGrey;
-                if(data['accepted']){
-                  iconColor = Colors.green;
-                }
-                else{
-                  iconColor = Colors.red;
-                }
                 return Container(
                   height: 50,
                   margin: const EdgeInsets.only(bottom: 15.0),
@@ -196,27 +245,40 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
                   ),
                   child: ListTile(
                     leading: Container(
-                      width: 20,
-                      height: 20,
+                      width: 10,
+                      height: 50,
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       alignment: Alignment.center,
-                      child: CircleAvatar(
-                        backgroundColor: iconColor,
-                      ),
                     ),
-                    title: Text(data['pickup'].toString()),
-                    subtitle: Text(data['destination'].toString()),
-                    isThreeLine: true,
+                    title: Row(
+                    children: [
+                      const Text('From ', style: 
+                          TextStyle(fontFamily: 'Cairo',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.indigo),),
+                      Text(data['pickup'].toString()),
+                      const Icon(Icons.arrow_forward),
+                      const Text(' To ', style: 
+                          TextStyle(fontFamily: 'Cairo',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.indigo),),
+                      Text(data['destination'].toString()),
+                    ],
+                  ),
+                  subtitle: (data['pickup'].toString()==university['location'].toString())? 
+                  Text("${duskRide.hour}:${duskRide.minute}") : Text("${morningRide.hour}:${morningRide.minute}"),
+                  isThreeLine: true,
                     dense: true,
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(onPressed: () {
+                    trailing: IconButton(
+                      onPressed: (){
+                          isPressed = true;
                           //set that ID and document values to driver_rides
-                          //add attribute driver_name
+                          //add attribute driver_email
                           //change offeredState = True
                           final String documentId;
-                          //offeredState = true;
+                          offeredState = true;
                           
                           if(data['pickup'] == university['location']){
                             increment++;
@@ -227,9 +289,9 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
                             String index = increment.toString();
                             documentId = "fromASU$index";
                             _fireStore.collection('driver_rides').doc(documentId).set({
-                            //'driver_name'
+                            //'driver_email'
                             'id' : documentId,
-                            'driver_name': "Anne",
+                            'driver_email': "Anne",
                             'pickup': data['pickup'], 
                             'p_lat': data['p_lat'],
                             'p_long': data['p_long'],
@@ -244,18 +306,13 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
                             'paid': paidState,
                             'time_offered': timestamp,
                             });
-                            //from ASU data['time_offered].add(const Duration(hours: 12));
-                            if((duskRide.hour - timestamp.hour) >= 12){
-                              //issue accepted color
-                              //iconColor = Colors.green;
+                            //from ASU 
+                            if((duskRide.hour - timestamp.hour) <= 12){
                               acceptedState = true;
                               _fireStore.collection('driver_rides').doc(documentId).update({
                                 'accepted':true,});
-                                //isPressed = true;
+                                isPressed = true;
                             }
-                            //else{
-                              //iconColor = Colors.red;
-                            //}
                           }
                           else{
                             increment++;
@@ -266,9 +323,9 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
                             String index = increment.toString();
                             documentId = "toASU$index";
                             _fireStore.collection('driver_rides').doc(documentId).set({
-                            //'driver_name'
+                            //'driver_email'
                             'id' : documentId,
-                            'driver_name': "Benny",
+                            'driver_email': "Benny",
                             'pickup': data['pickup'], 
                             'p_lat': data['p_lat'],
                             'p_long': data['p_long'],
@@ -284,39 +341,23 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
                             'time_offered': timestamp,
                             });
                             //to ASU 
-                            if((morningRide.hour - timestamp.hour) >= 12){
-                              //issue accepted color
-                              //iconColor = Colors.green;
+                            if((morningRide.hour - timestamp.hour) <= 12){
                               acceptedState = true;
                               _fireStore.collection('driver_rides').doc(documentId).update({
                                 'accepted':true,});
-                                //isPressed = true;
+                              isPressed = true;
                             }
-                            //else{
-                              //iconColor = Colors.red;
-                            //}
                           }
-                          //ERROR
-                          //debugPrint(_fireStore.collection('locations').where(, isEqualTo: True));
-
-                        }, icon: const Icon(Icons.favorite)
-                        ),//turn offered state true
-                        IconButton(onPressed: () {}, icon: const Icon(Icons.paypal)),//turn paid state true in driver_rides
-                        /*IconButton( 
+                          setState(() {
+                            isPressed = !isPressed;
+                             //turn on and off
+                          });
+                        },
                         icon:Icon(
-                          Icons.check_circle,
-                          color: (isPressed)? Colors.green : Colors.red,
-                          ),
-                          onPressed:(){
-                            setState(() {
-                              isPressed = isPressed;
-                            });
-                          }
-                          ),*/
-                        
-                          //),//turn accepted state true
-                        ],
-                      ),
+                          Icons.favorite,
+                          color: isPressed?Colors.deepPurpleAccent[400]:Colors.black
+                          ),  
+                    ),
                       onTap: (){
                         debugPrint(data['id']);
                         Navigator.push(context, 
@@ -328,7 +369,6 @@ class _LocationsRefreshState extends State<LocationsRefresh> {
                         //String idDetails = getDocument(data['id'], context);
                         //function that takes all the values needed for the route details
                         //HERE: THE DRIVER SIDE
-                        
                       },
                   ),
                 );

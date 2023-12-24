@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kar_ride_driver/global/global.dart';
 import 'package:kar_ride_driver/screens/home.dart';
 import 'package:kar_ride_driver/screens/forgot_pass.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 //TO DO:
 /*
 FIXED
@@ -24,6 +25,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
 
+
   final emailEditText = TextEditingController();
   //final phoneEditText = TextEditingController();
   final passwordEditText = TextEditingController();
@@ -33,12 +35,22 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _passwordVisible = false;
   
   //initialise state of controllers as clear or not clear
+  //late StreamSubscription<User?> user;
   @override //override default method
   void initState(){
     super.initState();
     emailEditText.addListener(onListen);
     //phoneEditText.addListener(onListen);
     passwordEditText.addListener(onListen);
+    FirebaseAuth.instance
+    .authStateChanges()
+    .listen((User? user) {
+    if (user == null) {
+      debugPrint('User is currently signed out!');
+    } else {
+      debugPrint('User is signed in!');
+    }
+  });
   }
   //clean up controllers to save memory
   @override
@@ -77,7 +89,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
 
     return GestureDetector(
       onTap:(){
@@ -89,12 +100,12 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             Column(
               children: [
-                Image.asset(darkTheme ? 'assets/images/citydark.png': 'assets/images/citylight.png'),
+                Image.asset('assets/images/citydark.png'),
                 const SizedBox(height: 20),
                 Text(
                   'Login',
                   style: TextStyle(
-                    color: darkTheme ? Colors.deepPurpleAccent.shade400 : Colors.yellow.shade900,
+                    color: Colors.deepPurpleAccent.shade400,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
@@ -123,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   color: Colors.grey,
                                 ),
                                 filled: true,
-                                fillColor: darkTheme ? Colors.black87 : Colors.grey.shade200,
+                                fillColor: Colors.grey.shade200,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
                                   borderSide: const BorderSide(
@@ -180,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   color: Colors.grey,
                                 ),
                                 filled: true,
-                                fillColor: darkTheme ? Colors.black87 : Colors.grey.shade200,
+                                fillColor: Colors.grey.shade200,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
                                   borderSide: const BorderSide(
@@ -223,7 +234,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             ///LOGIN BUTTON
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: darkTheme? Colors.black : Colors.white, backgroundColor: darkTheme? Colors.deepPurple.shade300 : Colors.yellow.shade900,
+                                foregroundColor:Colors.white, 
+                                backgroundColor:Colors.deepPurple.shade300,
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(32),
@@ -258,7 +270,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: Text(
                                 'Forgot Password',
                                 style: TextStyle(
-                                  color: darkTheme? Colors.indigo.shade500 : Colors.yellow.shade900,
+                                  color:Colors.indigo.shade500,
                                 ),
                               ),
                             ),
@@ -285,7 +297,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     'Create an Account',
                                     style: TextStyle(
                                       fontSize: 15,
-                                      color: darkTheme? Colors.indigo.shade500 : Colors.yellow.shade900,
+                                      color:Colors.indigo.shade500,
                                     ),
                                   ),
                                 ),

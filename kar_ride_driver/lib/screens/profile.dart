@@ -20,7 +20,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 TextStyle(fontFamily: 'Cairo',
                           fontSize: 25,
                           fontWeight: FontWeight.w800,),),
-                          backgroundColor:Colors.yellow.shade900),
+                          backgroundColor:Colors.deepPurpleAccent.shade400),
         drawer: Drawer(
               child: ListView(
                 // Important: Remove any padding from the ListView.
@@ -28,7 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   DrawerHeader(
                     decoration: BoxDecoration(
-                      color: Colors.yellow[900],//yellow.shade100 not called from const type
+                      color:Colors.deepPurpleAccent.shade400,
                       shape:BoxShape.rectangle,
                     ),
                     child: const Text('User Details', style: 
@@ -51,7 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     leading: const Icon(
                       Icons.emoji_transportation_rounded,
                     ),
-                    title: const Text('Reserve Ride'),//Reserve Ride//from routes page///change colour of polyline
+                    title: const Text('My Routes'),//Reserve Ride//from routes page///change colour of polyline
                     onTap: () {
                       Navigator.pushReplacementNamed(context, "/Routes");
                     },
@@ -63,6 +63,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: const Text('Ride History'),//Rides History
                     onTap: () {
                       Navigator.pushReplacementNamed(context, "/History");//ride history
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.history,
+                    ),
+                    title: const Text('Home'),
+                    onTap: () {
+                      Navigator.pushReplacementNamed(context, "/Home");
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.history,
+                    ),
+                    title: const Text('All Locations'),
+                    onTap: () {
+                      Navigator.pushReplacementNamed(context, "/AllLocations");
                     },
                   ),
                 ],
