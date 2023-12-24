@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kar_ride/global/global.dart';
-import 'package:kar_ride/screens/home.dart';
 import 'package:kar_ride/assistants/assistant_methods.dart';
-import 'package:kar_ride/splash_screen/splash_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -65,6 +63,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: const Text('Ride History'),//Rides History
                     onTap: () {
                       Navigator.pushReplacementNamed(context, "/History");//ride history
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.history,
+                    ),
+                    title: const Text('Home'),//Rides History
+                    onTap: () {
+                      Navigator.pushReplacementNamed(context, "/Home");//home
                     },
                   ),
                 ],

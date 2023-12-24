@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kar_ride/assistants/assistant_methods.dart';
 import 'package:kar_ride/global/global.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -10,10 +9,13 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
+  String? data;
+
   @override
   Widget build(BuildContext context) {
-   bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
-    AssistantMethods.readCurrentOnlineUserInfo();
+   //bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    //AssistantMethods.readCurrentOnlineUserInfo();
+    data = ModalRoute.of(context)?.settings.arguments as String?;
     return GestureDetector(
       onTap:(){
         FocusScope.of(context).unfocus();
@@ -24,6 +26,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           fontSize: 25,
                           fontWeight: FontWeight.w800,),),
                           backgroundColor:Colors.yellow.shade900),
+        
         drawer: Drawer(
               child: ListView(
                 // Important: Remove any padding from the ListView.
@@ -80,7 +83,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 ),
                 SizedBox(height: 20,),
                 Text(
-                  "100", style:TextStyle(fontSize: 30, fontWeight: FontWeight.bold)
+                  data.toString(), style:TextStyle(fontSize: 30, fontWeight: FontWeight.bold)
                   ),
               ],
             ),

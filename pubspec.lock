@@ -873,18 +873,18 @@ packages:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
-      sha256: "8a1220f978491f56431c66dacf1bb97bf2abcd1458b542fe0dfbf1a630c67260"
+      sha256: "69c827931957d5b121ee9f0b9b0b8d7d0d1ac537b61bcdd5c3fbffc044bbe86e"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "23.2.4"
+    version: "24.1.41"
   syncfusion_flutter_maps:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_maps
-      sha256: "22d5d2a38283ffda5a6758f850a9a79e2bbd52a3d48b02c7d66f17b03418602b"
+      sha256: "680e88479913bf3e1e22e85969c65aa4e9d007535c9d369a877b56cbbe34746a"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "23.2.4"
+    version: "24.1.41"
   term_glyph:
     dependency: transitive
     description:

@@ -14,11 +14,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-/*TO DO
-DONE
-Fix firebase assistance 
-Fix timer
-*/
+
   startTimer(){  //duration until snapshot is received
     Timer(Duration(seconds: 5), () async {
       if(firebaseAuth.currentUser != null){
@@ -26,7 +22,7 @@ Fix timer
         //else keep it as null
         firebaseAuth.currentUser != null ? AssistantMethods.readCurrentOnlineUserInfo() : null;
         
-        Navigator.push(context, MaterialPageRoute(builder: (c)=>HomeScreen()));//then go to HomeScreen
+        Navigator.push(context, MaterialPageRoute(builder: (c)=>HomeScreen()));//if already logged in HomeScreen
       }
       else{
         Navigator.push(context, MaterialPageRoute(builder: (c)=>LoginScreen()));//then go to LoginScreen

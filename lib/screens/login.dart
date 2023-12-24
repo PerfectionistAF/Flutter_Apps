@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kar_ride/global/global.dart';
 import 'package:kar_ride/screens/home.dart';
 import 'package:kar_ride/screens/forgot_pass.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 //TO DO:
 /*
 FIXED
@@ -39,6 +40,15 @@ class _LoginScreenState extends State<LoginScreen> {
     emailEditText.addListener(onListen);
     //phoneEditText.addListener(onListen);
     passwordEditText.addListener(onListen);
+    FirebaseAuth.instance
+    .authStateChanges()
+    .listen((User? user) {
+    if (user == null) {
+      debugPrint('User is currently signed out!');
+    } else {
+      debugPrint('User is signed in!');
+    }
+  });
   }
   //clean up controllers to save memory
   @override

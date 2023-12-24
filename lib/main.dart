@@ -7,9 +7,10 @@ import 'package:kar_ride/screens/routes.dart';
 import 'package:kar_ride/screens/history.dart';
 import 'package:kar_ride/screens/profile.dart';
 import 'package:kar_ride/screens/pay.dart';
-import 'package:kar_ride/screens/forgot_pass.dart';
-import 'package:kar_ride/themes/themes.dart';
 import 'package:kar_ride/splash_screen/splash_screen.dart';
+import 'package:kar_ride/screens/forgot_pass.dart';
+import 'package:kar_ride/screens/route_details.dart';
+import 'package:kar_ride/themes/themes.dart';
 import 'package:kar_ride/firebase_options.dart';
 
 void main()async {
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
       theme:Themes.lightTheme,
       darkTheme: Themes.darkTheme,
       debugShowCheckedModeBanner: false,
-      home: RoutesScreen(),//SplashScreen(),
+      home: SplashScreen(),
       routes:{
         "/Home":(context)=>HomeScreen(),
         "/Profile":(context)=>ProfileScreen(),
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         "/Register":(context)=>RegisterScreen(),
         "/Login":(context)=>LoginScreen(),
         "/ForgotPassword":(context)=>ForgotPasswordScreen(),
+        "/RouteDetails":(context)=>RouteDetailsScreen(),
       },
     );
   }

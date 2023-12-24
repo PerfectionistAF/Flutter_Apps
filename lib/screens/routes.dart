@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kar_ride/assistants/assistant_methods.dart';
-import 'package:kar_ride/global/global.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:kar_ride/screens/route_details.dart';
+import 'package:kar_ride/global/global.dart';
 ////retrieve the offerred rides by drivers
 ////either accept or not///bypass time constraint by using only offerred
 bool acceptedState = false;
@@ -41,7 +41,7 @@ class _RoutesScreenState extends State<RoutesScreen> {
                           fontSize: 25,
                           fontWeight: FontWeight.w800,),),
                           backgroundColor:Colors.yellow.shade900),
-        /*drawer: Drawer(
+        drawer: Drawer(
               child: ListView(
                 // Important: Remove any padding from the ListView.
                 padding: EdgeInsets.zero,
@@ -87,11 +87,11 @@ class _RoutesScreenState extends State<RoutesScreen> {
                   ),
                 ],
               ),
-              ),*/
+              ),
         body:  Container(
         margin: const EdgeInsets.all(10.0),
         child: StreamBuilder<QuerySnapshot>(
-        stream: _fireStore.collection('driver_rides').where('accepted', isEqualTo: true).snapshots(),
+        stream: _fireStore.collection('driver_rides').where('offered', isEqualTo: true).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Text('No offered rides at the moment');
@@ -120,8 +120,25 @@ class _RoutesScreenState extends State<RoutesScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       alignment: Alignment.center,
                     ),
-                    title: Text(data['pickup'].toString()),
-                    subtitle: Text(data['driver_name'].toString()),
+                    title: Row(
+                    children: [
+                      const Text('From ', style: 
+                          TextStyle(fontFamily: 'Cairo',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: Color.fromRGBO(245, 127, 23, 1)),),
+                      Text(data['pickup'].toString()),
+                      const Icon(Icons.arrow_forward),
+                      const Text(' To ', style: 
+                          TextStyle(fontFamily: 'Cairo',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: Color.fromRGBO(245, 127, 23, 1)),),
+                      Text(data['destination'].toString()),
+                    ],
+                  ),
+                  subtitle: (data['pickup'].toString().contains("ASU"))? 
+                  Text("${duskRide.hour}:${duskRide.minute}") : Text("${morningRide.hour}:${morningRide.minute}"),
                     isThreeLine: true,
                     dense: true,
                     trailing: Row(
@@ -139,8 +156,8 @@ class _RoutesScreenState extends State<RoutesScreen> {
                           //change offeredState = True
                           final String documentId;
                           //offeredState = true;
-                          
-                          if(data['accepted'] == true || data['offered']==true){
+                          if(data['pickup'].toString().contains("ASU")){
+                            if(data['accepted'] == true || data['offered'] == true){
                             increment++;
                             final timestamp = DateTime.now();
                             //var now = format.parse(timestamp);
@@ -167,18 +184,21 @@ class _RoutesScreenState extends State<RoutesScreen> {
                             'paid': paidState,
                             'time_offered': timestamp,
                             });
-                            //from ASU data['time_offered].add(const Duration(hours: 12));
-                            if((duskRide.hour - timestamp.hour) >= 12){
+                            //from ASU
+                            //if((duskRide.hour - timestamp.hour) <= 1){
+                              var now = DateTime.now();
+                            if((now.hour - timestamp.hour)  <= 1){  //for easier testing, accepted within 1 hour 
                               //issue accepted color
                               //iconColor = Colors.green;
                               acceptedState = true;
-                              _fireStore.collection('user_rides').doc(documentId).update({
+                              _fireStore.collection('driver_rides').doc(documentId).update({
                                 'accepted':true,});
                                 //isPressed = true;//USER HAS FINALLY ACCEPTED THE RIDE!!
                             }
                             //else{
                               //iconColor = Colors.red;
                             //}
+                          }//fromASU
                           }
                           else{
                             increment++;
@@ -208,11 +228,13 @@ class _RoutesScreenState extends State<RoutesScreen> {
                             'time_offered': timestamp,
                             });
                             //to ASU 
-                            if((morningRide.hour - timestamp.hour) >= 12){
+                            //if((morningRide.hour - timestamp.hour) >= 12){
+                            var now = DateTime.now();
+                            if((now.hour - timestamp.hour)  <= 1){
                               //issue accepted color
                               //iconColor = Colors.green;
                               acceptedState = true;
-                              _fireStore.collection('driver_rides').doc(documentId).update({
+                              _fireStore.collection('user_rides').doc(documentId).update({
                                 'accepted':true,});
                                 //isPressed = true;
                             }
@@ -235,12 +257,12 @@ class _RoutesScreenState extends State<RoutesScreen> {
                         Navigator.push(context, 
                         MaterialPageRoute(
                           builder: (context)=> const RouteDetailsScreen(),
-                          settings: RouteSettings(arguments: data['id']),
+                          settings: RouteSettings(arguments: data['id'].toString()),
                           ),
                           );
                         //String idDetails = getDocument(data['id'], context);
                         //function that takes all the values needed for the route details
-                        //HERE: THE DRIVER SIDE
+                        //HERE: THE USER SIDE
                         
                       },
                   ),
